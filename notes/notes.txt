@@ -1,0 +1,2 @@
+idea:
+	use cors for verifing domais acessing app
