@@ -4,6 +4,7 @@ import chalk from 'chalk';   // for the green tick
 import mysql from 'mysql'
 
 
+
 let connection = mysql.createConnection({
     host: 'mysql',
     user: 'devops',
