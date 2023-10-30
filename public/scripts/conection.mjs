@@ -45,16 +45,11 @@ async function startConection() {
       // Use the connection to query the database
       //const [rows, fields] = await connection.query('SELECT * FROM your_table');
   
-      //connection.release(); // Release the connection back to the pool
+      connection.release(); // Release the connection back to the pool
   
-      //console.log(rows);
+      console.log(rows);
     } catch (error) {
       console.error(error);
-    }
-    finally {
-      if (connection) {
-        connection.release();
-      }
     }
   }
 export default startConection;
