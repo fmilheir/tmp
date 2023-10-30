@@ -1,4 +1,4 @@
-import express from "express";
+import app from './public/scripts/server.mjs'
 import 'dotenv/config';    
 import chalk from 'chalk';   // for the green tick       
 import mysql from 'mysql'
@@ -18,21 +18,8 @@ connection.connect(function(err) {
     }
 );
 
-const PORT = process.env.PORT || 3000;
-const app = express();
+const PORT = process.env.PORT;
 
-
-app.use(express.static("public"));
-app.use("/public", express.static('./public/'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-
-
-app.get("/", (req, res) => {
-    res.redirect( "/public/index.html"); // only this one works 
-    }   
-);
 
 
 app.listen( PORT, () => {
