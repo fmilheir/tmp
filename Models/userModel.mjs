@@ -1,6 +1,6 @@
 import pool from '../public/scripts/pool.mjs';
 
-class user{
+class userModel{
 
     getAllUsers = async (req, res) => {
         try {
@@ -44,4 +44,4 @@ class user{
     }
     // write any database queries here withing a function! make sure it is async!!!
 
-}export default user;
+}export default userModel;

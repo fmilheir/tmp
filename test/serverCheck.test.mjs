@@ -1,8 +1,8 @@
 import assert from 'assert';
-import UserModel from './userModel.mjs';
-import UserController from './userController.mjs';
-import PointsOfInterestModel from './pointsOfInterestModel.mjs';
-import PointsOfInterestController from './pointsOfInterestController.mjs';
+import UserModel from '../Models/userModel.mjs';
+import userController from '../Controllers/userControl.mjs';
+import PointsOfInterestModel from '../Models/poiModel.mjs';
+import PointsOfInterestController from '../Controllers/poiControl.mjs';
 
 describe('User Model and Controller Tests', () => {
   it('should retrieve a user by username', async () => {
