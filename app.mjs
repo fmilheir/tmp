@@ -1,7 +1,8 @@
 import express, { query } from "express";
 import 'dotenv/config';    
 import chalk from 'chalk';   // for the green tick    
-import startConection from './public/scripts/conection.mjs';
+import startConection from './public/scripts/serverCheck.mjs';
+
 startConection();
 
 

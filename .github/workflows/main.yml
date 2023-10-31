@@ -1,0 +1,31 @@
+name: NodeJS Github Action
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3 # Checkout the repository
+
+      - name: Use Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: npm install and build
+        run: |
+          npm install
+          npm run build --if-present
+
+      - name: Adjust permissions for jest
+        run: chmod +x ./node_modules/.bin/jest
+
+      - name: npm test
+        run: npm test
