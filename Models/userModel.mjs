@@ -12,6 +12,7 @@ class userModel{
     };
 
     async addUser(username, password, permission_level) {
+      console.log(` this is my ${username}`)
         try {
           const query = 'INSERT INTO users (username, password, permission_level) VALUES (?, ?, ?)';
           const [result] = await pool.query(query, [username, password, permission_level]);
