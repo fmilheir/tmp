@@ -1,6 +1,7 @@
 import express from "express";
 import cors from  'cors';
-import userRoute from '../../routes/userRoute.mjs'
+import userRoute from '../../routes/userRoute.mjs';
+
 
 const app = express();
 
@@ -12,6 +13,15 @@ app.use(express.static("publid"));
 app.use("/public", express.static('./public/'));
 
 
+app.use((req, res, next) => {
+    res.status(404).send("Sorry can't find that!")
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack)
+    res.status(500).send('Something broke!')
+
+});
 
 app.get("/", (req, res) => {
     res.redirect( "/public/index.html"); // only this one works 

@@ -11,7 +11,7 @@ router.get('/all', userController.getAllUsersController);
 router.post('/users', userController.addUserController);
 router.delete('/users/:userId', userController.deleteUserController);
 router.get('/users/username/:username', userController.getUserByUsernameController);
-router.post('/signup', async(res, req) => {
+router.post('/signup', async(req, res) => {
     const { username, email, password, confirmPassword } = req.body;
     try {
         // Use a default permission level or based on the provided value
@@ -31,6 +31,21 @@ router.post('/admin-signup', isAuthenticated, isAdmin, async (req, res) => {
         const permission_level= PERMISSION_LEVELS.ADMIN;  // Set for the admin
         const userId = await userModel.addUser(username, email, password, permission_level);
         res.status(201).json({ userId });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post('/checkusername', async(req, res) => {
+    console.log('checkusername route hit');
+    const { username } = req.body;
+    try {
+        const user = await userModel.getUserByUsername(username);
+        if (user) {
+            res.json({ message: 'Username already exists.' });
+        } else {
+            res.json({ message: 'Username is available.' });
+        }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
