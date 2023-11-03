@@ -10,10 +10,13 @@ const DATABASE = process.env.MYSQL_DATABASE;
 
 
 const pool = mysql.createPool({
-  host: HOST,
-  user: USER,
-  password: PASSWORD,
-  database: DATABASE,
+  host: HOST || 'mysql',
+  user: USER || 'devops',
+  password: PASSWORD || 'devops',
+  database: DATABASE || 'devops',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
 export default pool;

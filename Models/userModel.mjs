@@ -1,4 +1,5 @@
 import pool from '../public/scripts/pool.mjs';
+import { PERMISSION_LEVELS } from '../public/scripts/permissions';
 
 class userModel{
 
@@ -11,11 +12,11 @@ class userModel{
         }
     };
 
-    async addUser(username, password, permission_level) {
+    async addUser(username, email, password, permission_level = PERMISSION_LEVELS.USER) {
       console.log(` this is my ${username}`)
         try {
-          const query = 'INSERT INTO users (username, password, permission_level) VALUES (?, ?, ?)';
-          const [result] = await pool.query(query, [username, password, permission_level]);
+          const query = 'INSERT INTO users (username, email, password, permission_level) VALUES (?, ?, ?)';
+          const [result] = await pool.query(query, [username, email, password, permission_level]);
           return result.insertId;
         } catch (err) {
           console.error(err);
