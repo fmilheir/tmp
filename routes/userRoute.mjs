@@ -1,6 +1,7 @@
 import express from 'express';
 import userController from '../Controllers/userControl.mjs';
-import { PERMISSION_LEVELS } from '../public/scripts/permissions';
+import { PERMISSION_LEVELS } from '../public/scripts/permissions.mjs';
+import { isAuthenticated, isAdmin } from '../middleware/isAdmin.mjs';
 
 
 
