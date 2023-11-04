@@ -15,7 +15,7 @@ class userController {
       const { username, password, permission_level } = req.body;
 
       try {
-        const userId = await new user().addUser(username, password, permission_level);
+        const userId = await new user().addUser(username, email, password, permission_level);
         res.json({ userId });
       } catch (err) {
         res.status(500).json({ error: err });
@@ -40,8 +40,8 @@ class userController {
       const username = req.params.username;
 
       try {
-        const userModel = new UserModel();
-        const user = await userModel.getUserByUsername(username);
+        const userInstance = new UserModel();
+        const user = await userInstance.getUserByUsername(username);
 
         if (user) {
           res.json(user);

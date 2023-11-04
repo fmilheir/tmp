@@ -8,23 +8,13 @@ services:
       MYSQL_DATABASE: devops
       MYSQL_USER: devops
       MYSQL_PASSWORD: devops
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
     ports:
       - "3306:3306"
   devops:
     container_name: devops-app
     build: .
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_DATABASE: devops
-      MYSQL_USER: devops
-      MYSQL_PASSWORD: devops
     ports:
       - "3000:3000"
     depends_on:
       - mysql
+    #command: ["sh", "-c", "while ! nc -z mysql-devops 3306; do sleep 1; done; node your-app.js"]
