@@ -18,7 +18,7 @@ async function startConection() {
           username VARCHAR(255) NOT NULL UNIQUE,
           email VARCHAR(255) NOT NULL UNIQUE,
           password VARCHAR(255) NOT NULL,
-          permission_level ENUM('admin', 'customer', 'external') NOT NULL
+          permission_level ENUM('admin', 'user', 'guest') NOT NULL
         )
       `);
       console.log('The "users" table has been created.');
