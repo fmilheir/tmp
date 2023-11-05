@@ -1,7 +1,7 @@
 import express from 'express';
 import userController from '../Controllers/userControl.mjs';
 import userModel from '../Models/userModel.mjs'; // Make sure to import the userModel
-import { PERMISSION_LEVELS } from '../public/scripts/permissions.mjs';
+import { PERMISSION_LEVELS } from '../public/scripts/permissions.js';
 import { isAuthenticated, isAdmin } from '../middleware/auth.mjs';
 
 const router = express.Router();
@@ -10,7 +10,7 @@ router.get('/all', userController.getAllUsersController);
 router.post('/users', userController.addUserController); // Use router, not app
 router.delete('/users/:userId', userController.deleteUserController); // Use router, not app
 router.get('/users/username/:username', userController.getUserByUsernameController);
-
+router.post('/login', userController.login);
 router.post('/signup', async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
     try {

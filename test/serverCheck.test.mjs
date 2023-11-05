@@ -1,4 +1,5 @@
 import assert from 'assert';
+import bcrypt from 'bcrypt';
 import UserModel from '../Models/userModel.mjs';
 import userController from '../Controllers/userControl.mjs';
 import PointsOfInterestModel from '../Models/poiModel.mjs';

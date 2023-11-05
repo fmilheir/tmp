@@ -17,6 +17,10 @@ app.get("/", (req, res) => {
     res.redirect( "/public/index.html"); // only this one works 
 });
 
+app.get("/login", (req, res) => {
+    res.redirect( "/public/login.html"); 
+})
+
 app.use((req, res, next) => {
     res.status(404).send("Sorry can't find that!")
 });
