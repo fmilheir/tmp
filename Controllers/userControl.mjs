@@ -19,7 +19,7 @@ class userController {
   }
 
   static async addUserController(req, res) {
-    const { username, password, permission_level } = req.body;
+    const { username, email, password, permission_level } = req.body;
     try {
       const userId = await new user().addUser(username, email, password, permission_level);
       res.json({ userId });
@@ -68,7 +68,7 @@ class userController {
         res.status(401).json({ error: 'Wrong username or password!' });
       }
     } catch (error) {
-      console.error('Login error: ', error);
+      // console.error('Login error: ', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }

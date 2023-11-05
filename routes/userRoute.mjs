@@ -1,7 +1,7 @@
 import express from 'express';
 import userController from '../Controllers/userControl.mjs';
 import userModel from '../Models/userModel.mjs'; // Make sure to import the userModel
-import { PERMISSION_LEVELS } from '../public/scripts/permissions.js';
+import { PERMISSION_LEVELS } from '../public/scripts/permissions.mjs';
 import { isAuthenticated, isAdmin } from '../middleware/auth.mjs';
 
 const router = express.Router();
@@ -19,7 +19,7 @@ router.post('/signup', async (req, res) => {
         const userId = await userInstance.addUser(username, email, password, permission_level);
         res.status(201).json({ userId }); 
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         res.status(500).json({ error: error.message }); // Send the correct status
     }
 });
@@ -36,7 +36,7 @@ router.post('/admin-signup', isAuthenticated, isAdmin, async (req, res) => {
 });
 
 router.post('/checkusername', async(req, res) => {
-    console.log('checkusername route hit');
+    // console.log('checkusername route hit');
     const { username } = req.body;
     try {
         const userModelInstance = new userModel(); 
@@ -47,7 +47,7 @@ router.post('/checkusername', async(req, res) => {
             res.status(200).json({ message: 'Username is available.' });
         }
     } catch (error) {
-        console.error('Error in the checkUsername route: ', error);
+        // console.error('Error in the checkUsername route: ', error);
         res.status(500).json({ error: error.message });
     }
 });
