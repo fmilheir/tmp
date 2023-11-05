@@ -6,6 +6,9 @@ dotenv.config();
 const EXPIRES_IN = process.env.EXPIRES_IN
 const JWT_SECRET = process.env.JWT_SECRET
 
+class NotFoundError extends Error {}
+
+class InternalServerError extends Error {}
 class userController {
   
 
@@ -43,13 +46,15 @@ class userController {
   }
   static async getUserByUsernameController(req, res) {
     const username = req.params.username;
+    if(!username)
+    res.status(400).json({ error: 'Username and password are required.' })
     try {
       const userInstance = new UserModel();
       const user = await userInstance.getUserByUsername(username);
       if (user) {
         res.json(user);
       } else {
-        res.status(404).json({ error: 'User not found.' });
+        res.status(401).json({ error: 'Wrong username or password!' });
       }
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -59,6 +64,8 @@ class userController {
     try{
       const { username, password } = req.body;
       const userInstance = new user();
+      if(!username || !password)
+        res.status(400).json({ error: 'Username and password are required.' })
       const isValid = await userInstance.validateUserPassword(username, password);
       if (isValid) {
         // Create token
@@ -67,9 +74,14 @@ class userController {
       }else{
         res.status(401).json({ error: 'Wrong username or password!' });
       }
-    } catch (error) {
-      console.error('Login error: ', error);
-      res.status(500).json({ error: 'Internal server error' });
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        res.status(404).json({ error: 'Not Found' }); // 404 for not found
+      } else if (err instanceof InternalServerError) {
+        res.status(500).json({ error: 'Internal Server Error' }); // 500 for server error
+      } else {
+        res.status(400).json({ error: 'Bad Request' }); // 400 for other client errors
+      }
     }
   }
 }

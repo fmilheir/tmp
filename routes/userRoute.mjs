@@ -1,7 +1,7 @@
 import express from 'express';
 import userController from '../Controllers/userControl.mjs';
 import userModel from '../Models/userModel.mjs'; // Make sure to import the userModel
-import { PERMISSION_LEVELS } from '../public/scripts/permissions.js';
+import PERMISSION_LEVELS from '../public/scripts/permissions.mjs';
 import { isAuthenticated, isAdmin } from '../middleware/auth.mjs';
 
 const router = express.Router();

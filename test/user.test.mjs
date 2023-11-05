@@ -1,7 +1,7 @@
 import request from 'supertest';
 import user from '../Models/userModel.mjs';
 import userController from '../Controllers/userControl.mjs';
-import { jwt } from 'jsonwebtoken';
+import  jwt  from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 
@@ -282,7 +282,7 @@ it('should return a token and user object when login is successful', async () =>
     bcrypt.compare.mockResolvedValue(true);
     jwt.sign.mockReturnValue('mockToken');
   
-    const userInstance = new UserModel();
+    const userInstance = new user();
     userInstance.validateUserPassword = jest.fn().mockResolvedValue(true);
   
     // Call the login method

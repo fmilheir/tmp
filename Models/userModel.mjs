@@ -1,5 +1,5 @@
 import pool from '../public/scripts/pool.mjs';
-import { PERMISSION_LEVELS } from '../public/scripts/permissions.js';
+import PERMISSION_LEVELS from '../public/scripts/permissions.mjs';
 import bcrypt from 'bcrypt';
 
 class userModel{
