@@ -21,10 +21,16 @@ class userController {
   static async addUserController(req, res) {
     const { username, email, password, permission_level } = req.body;
     try {
-      const userId = await new user().addUser(username, email, password, permission_level);
-      res.json({ userId });
+      const userInstance =new user();
+      const existingUser = await userInstance.getUserByUsername(username);
+      if (existingUser) {
+        return res.status(409).json({ error: 'Username already exists.' });
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const userId = await userInstance.addUser(username, email, hashedPassword, permission_level);
+      res.status(201).json({ userId });
     } catch (err) {
-      res.status(500).json({ error: err });
+      res.status(500).json({ error: 'Internal server error' });
     }
   }
     
@@ -59,7 +65,12 @@ class userController {
     try{
       const { username, password } = req.body;
       const userInstance = new user();
+      const user = await userInstance.getUserByUsername(username);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
       const isValid = await userInstance.validateUserPassword(username, password);
+      
       if (isValid) {
         // Create token
         const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: EXPIRES_IN });

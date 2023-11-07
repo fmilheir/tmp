@@ -51,9 +51,14 @@ class userModel{
   }
 
   async validateUserPassword(username, password){
-    const user = await this.getUserByUsername(username);
-    if (!user) return false;
-    return bcrypt.compare(password, user.password);
+    try{
+      const user = await this.getUserByUsername(username);
+      if (!user) return false;
+      return bcrypt.compare(password, user.password);
+    } catch (error) {
+      // Handle the error 
+      throw new Error('An error occurred during password validation');
+    }
   }
   // write any database queries here withing a function! make sure it is async!!!
 
