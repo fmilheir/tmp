@@ -42,7 +42,7 @@ router.post('/checkusername', async(req, res) => {
         const userModelInstance = new userModel(); 
         const user = await userModelInstance.getUserByUsername(username);
         if (user) {
-            res.json({ message: 'Username already exists.' });
+            res.status().json({ message: 'Username already exists.' });
         } else {
             res.status(200).json({ message: 'Username is available.' });
         }
