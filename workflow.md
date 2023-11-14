@@ -19,7 +19,12 @@
 
 ## Deployment with Azure: 
 
-* 
+* verify it with Olah!!
+
+
+## Technology overview:
+
+* To enhance modularity, the project leverages ES6 JavaScript runtimes, resulting in the use of '.mjs' file extensions.
 
 ## Containerizing the entire project using Docker:
 
@@ -30,4 +35,23 @@ FROM node:14
 ```
 * A Node.js image was generated instead of the customary Ubuntu image, streamlining the process by eliminating the need for additional setup steps related to Node.js configuration and dependencies.
 
-### 
+### .dockerignore file: 
+
+* By 
+```
+node_modules
+```
+excluding node modules, we enhance deployment efficiency and accelerate build times, Docker selectively includes only production code in its images, reducing overall size by excluding unnecessary dependency packages
+
+### docker-compose.yml file
+
+* Maximizing simplicity through automation with Docker Compose.
+* This configuration file establishes two containers: one for the database and another for the entire project.
+* The database container initiates after the project container 
+```
+ depends_on:
+      - mysql
+```
+and encompasses all the essential environment variables necessary for establishing a connection.
+* Additionally, a volume has been mounted to the database container to ensure data persistence beyond the container's lifecycle.
+
