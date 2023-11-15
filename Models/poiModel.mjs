@@ -57,6 +57,17 @@ class PointsOfInterestModel {
           throw error;
         }
       }
+
+      // Get a point of interest by Region
+      async getPointOfInterestByRegion(pointOfInterestRegiom) {
+        try {
+          const query = 'SELECT * FROM point_of_interest WHERE region = ?';
+          const [rows] = await pool.query(query, [pointOfInterestRegiom]);
+          return rows[0];
+        } catch (error) {
+          throw error;
+        }
+      }
   }
   
   export default PointsOfInterestModel;

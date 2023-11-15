@@ -77,6 +77,25 @@ class PointsOfInterestController {
           res.status(500).json({ error: error.message });
         }
       }
+
+      static async getPointOfInterestByRegionController(req, res) {
+        const pointOfInterestRegion = req.params.region;
+    
+        try {
+          const pointsOfInterestModel = new PointsOfInterestModel();
+          const pointOfInterest = await pointsOfInterestModel.getPointOfInterestByRegion(pointOfInterestRegion);
+    
+          if (pointOfInterest) {
+            res.json(pointOfInterest);
+          } else {
+            res.status(404).json({ error: 'Point of interest not found.' });
+          }
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      }
+
+      
   }
   
   export default PointsOfInterestController;

@@ -217,7 +217,7 @@ function Region({list}){    //// (4)
 
     function searchByRegion(){/// search /////////////// (4)
 
-        const regionName = document.getElementById("itme").value;
+        const regionName = document.getElementById("searchValue").value;
 
 
         fetch(`http://localhost:3000/poi/pointsOfInterest/${regionName}`,{
@@ -394,7 +394,7 @@ function Region({list}){    //// (4)
         cursor: 'pointer'
       };
 
-    function login(req,res,callback){//////////// (10)
+    /*function login(req,res,callback){//////////// (10)
         const username = document.getElementById("uname").value;
         const password = document.getElementById("pass").value;
         const loginDetails = {username,password};
@@ -426,9 +426,8 @@ function Region({list}){    //// (4)
         }catch(e){
             alert(`Error: ${e}`);
         }
-    }
+    }-//
     
-
     function logout(){ /////////////////10
         fetch(`http://localhost:3000/user/logout`,{
             method:"POST"
@@ -442,7 +441,7 @@ function Region({list}){    //// (4)
             }
             return response.json();
         })
-    }
+    }*/
     
     function show(){   //////////10
         const loginDiv = document.getElementById("logindiv");
@@ -452,39 +451,22 @@ function Region({list}){    //// (4)
     
 
     return(
-        <div>
-           
-           <div id="named">
-                {data ? <h3>Logged in as: {data}</h3> : <p></p>}
-            </div>
-            {data ? null : (
-                <li onClick={()=>show()}>Login</li> 
-            )}
-                {data &&<li onClick={()=> logout()}>Logout</li>}
-                
-                {data && <li><a href="/addPoi">Add Point of interest</a></li>}   
-
-                {data && <li><a href="/review">Add a Review</a></li>}
-                
-             
-            {data ? null : (         
-            <div id="logindiv" style={{ display: "none" }}>
-                <input type="text" id="uname" placeholder="Enter Username" required/>
-                <input type="text" id="pass" placeholder="Enter Password" required/>
-                <button onClick={()=>login()}>Login</button>
-            </div>
-            )}
-            
-            <div  style={{ width: "800px", height: "600px" }} id="map2" > </div> 
-
-            <br/>
-            <h1>{list}</h1>
-            
-            <div id="itme-container">
-                <input type="text" id="itme" placeholder="Enter region name" />
-                <button onClick={searchByRegion} id="itmebut">Search</button>
-            </div>
+        <div> 
             <div>
+                <h1 className="h3 mb-0 text-gray-800">{list}</h1>
+                <div className="d-sm-flex align-items-center justify-content-between mb-4">
+                    <fieldset style={{ width: `100%` }}>
+                        <input type="text" className="form-control bg-light border-0 small" placeholder="Search for a Region"
+                            aria-label="Search" aria-describedby="basic-addon2" id="searchValue" onChange={updateRegionf} />
+                        <br />
+                        <input type="button" style={{ width: `100%` }}
+                            className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="searchbtn" value="Search" onClick={updateResults} />
+                    </fieldset>
+                </div>
+
+            </div>`
+
+            <div className="d-sm-flex align-items-center justify-content-between mb-4">
                 {poi.length > 0? (poi.map((item) => (
                     <div key={item.id}>
                         <h3 id="nameh3" style={poiNameStyle} onClick={()=> takeMeThere(item.name,item.lon,item.lat,item.description,item.id)}>Name: {item.name}</h3>
@@ -502,6 +484,9 @@ function Region({list}){    //// (4)
 
                 )}
             </div>
+            <div className="d-sm-flex align-items-center justify-content-between mb-4">
+                <div id="map1" style={{ width: `100%`, height: `50vh`, margin: `50px` }}></div>
+            </div> 
         </div>
     )
 }
