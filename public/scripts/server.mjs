@@ -1,7 +1,7 @@
 import express from "express";
 import cors from  'cors';
-import userRoute from '../../routes/userRoute.mjs';
-import Poirouter from "../../routes/poiRoute.mjs";
+import UserRoute from '../../routes/userRoute.mjs';
+import PoiRouter from "../../routes/poiRoute.mjs";
 
 
 const app = express();
@@ -9,8 +9,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/user', userRoute);
-app.use('/poi', Poirouter);
+app.use('/user', UserRoute);
+app.use('/poi', PoiRouter);
 app.use(express.static("publid"));
 app.use("/public", express.static('./public/'));
 

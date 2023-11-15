@@ -58,13 +58,29 @@ function Region({list}){    //// (4)
                 const country = formData.get('country');
                 const region = formData.get('region');
                 const description = formData.get('description');
+                const recomendations = 0;
                 
-                if (name == "" || type == "" || country == "" || region == "" || description == "") {
+                if (name.trim == "" || type.trim == "" || country.trim == "" || region.trim == "" || description.trim == "") {
                     alert("Please fill in all the fields!");
                     return;
                 }
-                fetch(`http://localhost:3000/poi/pointsOfInterest/${name}/${type}/${country}/${region}/${Longtitude}/${Latitude}/${description}/0`,{
-                    method:"POST"
+
+                const newPoi = {
+                    name: name,
+                    type: type,
+                    country: country,
+                    region: region,
+                    lon: Longtitude,
+                    lat: Latitude,
+                    description: description,
+                    recommendations: 0
+                }
+                fetch(`http://localhost:3000/poi/pointsOfInterest`,{
+                    method:"POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(newPoi),
                 })
                 .then((response) => {
                     if (response.status === 201) {
