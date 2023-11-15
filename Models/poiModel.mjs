@@ -63,7 +63,7 @@ class PointsOfInterestModel {
         try {
           const query = 'SELECT * FROM point_of_interest WHERE region = ?';
           const [rows] = await pool.query(query, [pointOfInterestRegiom]);
-          return rows[0];
+          return rows;
         } catch (error) {
           throw error;
         }

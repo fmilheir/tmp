@@ -216,7 +216,7 @@ function Region({list}){    //// (4)
 
 
     function searchByRegion(){/// search /////////////// (4)
-
+        
         const regionName = document.getElementById("searchValue").value;
 
 
@@ -230,8 +230,9 @@ function Region({list}){    //// (4)
             }
             return response.json();
         })
-        .then((data) => {
+        .then(data => {
             setPoi(data)
+            console.log(data)
             ///////////////////// Add each POI to the markers array and create a marker for it
             data.forEach(poi => {   ///////////////////////////////////////////////////(13)
                 const lat = poi.lat;

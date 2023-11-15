@@ -66,7 +66,7 @@ function SideBar() {
                 <div className="sidebar-brand-icon rotate-n-15">
                     <i className="fas fa-laugh-wink"></i>
                 </div>
-                <div className="sidebar-brand-text mx-3">AE1 - Renato</div>
+                <div className="sidebar-brand-text mx-3">Dev Ops</div>
             </a>
             <hr className="sidebar-divider my-0" />
             <li className="nav-item active">
@@ -117,7 +117,7 @@ function Footer() {
         <footer className="sticky-footer bg-white">
             <div className="container my-auto">
                 <div className="copyright text-center my-auto">
-                    <span>Copyright &copy; AE1 - Renato Cardoso COM 518 2023</span>
+                    <span>Copyright &copy; AE1 - Dev Ops team 2023</span>
                 </div>
             </div>
         </footer>
