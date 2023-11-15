@@ -7,28 +7,20 @@ import { isAuthenticated, isAdmin } from '../middleware/auth.mjs';
 const router = express.Router();
 
 router.get('/all', userController.getAllUsersController);
-router.post('/users', userController.addUserController); // Use router, not app
-router.delete('/users/:userId', userController.deleteUserController); // Use router, not app
+router.post('/signup', userController.addUserController); 
+router.delete('/users/:userId', userController.deleteUserController); 
 router.get('/users/username/:username', userController.getUserByUsernameController);
 router.post('/login', userController.login);
-router.post('/signup', async (req, res) => {
-    const { username, email, password, confirmPassword } = req.body;
-    try {
-        const userInstance = new userModel();
-        const permission_level = PERMISSION_LEVELS.USER; // Default permission level
-        const userId = await userInstance.addUser(username, email, password, permission_level);
-        res.status(201).json({ userId }); 
-    } catch (error) {
-        // console.error(error);
-        res.status(500).json({ error: error.message }); // Send the correct status
-    }
-});
-
+router.post('/logout', userController.logout);
+router.post('/verify-account', userController.verifyAccount);
+router.post('/forgot-password', userController.forgotPassword);
+router.post('/reset-password', userController.handlePasswordForm);
 router.post('/admin-signup', isAuthenticated, isAdmin, async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
     try {
+        const userInstance = new userModel();
         const permission_level = PERMISSION_LEVELS.ADMIN;
-        const userId = await userModel.addUser(username, email, password, permission_level);
+        const userId = await userInstance.addUser(username, email, password, permission_level);
         res.status(201).json({ userId });
     } catch (error) {
         res.status(500).json({ error: error.message });

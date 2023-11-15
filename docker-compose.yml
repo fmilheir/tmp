@@ -24,8 +24,7 @@ services:
       - MYSQL_DATABASE=devops
       - MYSQL_USER=devops
       - MYSQL_PASSWORD=devops
+    command: ["sh", "-c", "while ! timeout 1 bash -c 'cat < /dev/null > /dev/tcp/mysql-devops/3306'; do sleep 1; done; node app.mjs"]
 
 volumes:
   mysql-data:
-
-    #command: ["sh", "-c", "while ! nc -z mysql-devops 3306; do sleep 1; done; node your-app.js"]

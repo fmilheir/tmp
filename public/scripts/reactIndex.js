@@ -74,7 +74,7 @@ function AppWidget({ title }) {
             });
             setSearchResult(resultPoi);
         } else {
-            alert("No region found please enter another one!");
+            alert(t("alertNoRegion"));
         }
     };
 
