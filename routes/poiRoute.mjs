@@ -1,16 +1,16 @@
 import express from 'express';
-const router = express.Router();
+const Poirouter = express.Router();
 import PointsOfInterestController from '../Controllers/poiControl.mjs';
 
 
-router.get('/pointsOfInterest', PointsOfInterestController.getAllPointsOfInterestController);
+Poirouter.get('/pointsOfInterest', PointsOfInterestController.getAllPointsOfInterestController);
 
-router.post('/pointsOfInterest', PointsOfInterestController.addPointOfInterestController);
+Poirouter.post('/pointsOfInterest', PointsOfInterestController.addPointOfInterestController);
 
-router.delete('/pointsOfInterest/:id', PointsOfInterestController.deletePointOfInterestController);
+Poirouter.delete('/pointsOfInterest/:id', PointsOfInterestController.deletePointOfInterestController);
 
-router.get('/pointsOfInterest/recommendations/:recommendations', PointsOfInterestController.getPointsOfInterestByRecommendationsController);
+Poirouter.get('/pointsOfInterest/recommendations/:recommendations', PointsOfInterestController.getPointsOfInterestByRecommendationsController);
 
-router.get('/pointsOfInterest/:id', PointsOfInterestController.getPointOfInterestByIdController);
+Poirouter.get('/pointsOfInterest/:id', PointsOfInterestController.getPointOfInterestByIdController);
 
-export default router;
+export default Poirouter;
