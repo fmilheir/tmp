@@ -12,7 +12,14 @@ class PointsOfInterestController {
     }
   
     static async addPointOfInterestController(req, res) {
-      const { name, type, country, region, lon, lat, description, recommendations } = req.body;
+      const name = req.params.name;
+      const type = req.params.type;
+      const country = req.params.country;
+      const region = req.params.region;
+      const lon = req.params.Longtitude;
+      const lat = req.params.Latitude;
+      const description = req.params.description;
+      const recommendations = 0;
   
       try {
         const pointsOfInterestModel = new PointsOfInterestModel();
