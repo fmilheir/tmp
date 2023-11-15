@@ -457,15 +457,19 @@ function Region({list}){    //// (4)
                 <div className="d-sm-flex align-items-center justify-content-between mb-4">
                     <fieldset style={{ width: `100%` }}>
                         <input type="text" className="form-control bg-light border-0 small" placeholder="Search for a Region"
-                            aria-label="Search" aria-describedby="basic-addon2" id="searchValue" onChange={updateRegionf} />
+                            aria-label="Search" aria-describedby="basic-addon2" id="searchValue" /*onChange={updateRegionf}*/ />
                         <br />
                         <input type="button" style={{ width: `100%` }}
-                            className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="searchbtn" value="Search" onClick={updateResults} />
+                            className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="searchbtn" value="Search" onClick={searchByRegion} />
                     </fieldset>
                 </div>
 
             </div>`
 
+            
+            <div className="d-sm-flex align-items-center justify-content-between mb-4">
+                <div id="map2" style={{ width: `100%`, height: `50vh`, margin: `50px` }}></div>
+            </div> 
             <div className="d-sm-flex align-items-center justify-content-between mb-4">
                 {poi.length > 0? (poi.map((item) => (
                     <div key={item.id}>
@@ -484,9 +488,6 @@ function Region({list}){    //// (4)
 
                 )}
             </div>
-            <div className="d-sm-flex align-items-center justify-content-between mb-4">
-                <div id="map1" style={{ width: `100%`, height: `50vh`, margin: `50px` }}></div>
-            </div> 
         </div>
     )
 }
