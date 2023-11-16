@@ -1,7 +1,7 @@
 import userController from '../Controllers/userControl.mjs';
 import userModel from '../Models/userModel.mjs';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 // Mocking modules
 jest.mock('jsonwebtoken', () => ({
@@ -9,7 +9,7 @@ jest.mock('jsonwebtoken', () => ({
   }));
 
 jest.mock('../Models/userModel.mjs');
-jest.mock('bcryptjs', () => ({
+jest.mock('bcrypt', () => ({
     hash: jest.fn(() => Promise.resolve('hashedPassword')),
     compare: jest.fn(),
 }));

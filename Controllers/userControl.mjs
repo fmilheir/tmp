@@ -1,6 +1,8 @@
-import user from '../Models/userModel.mjs';
+import userModel from '../Models/userModel.mjs';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import { PERMISSION_LEVELS } from '../public/scripts/permissions.mjs';
 
 dotenv.config();
 const EXPIRES_IN = process.env.EXPIRES_IN
@@ -11,7 +13,7 @@ class userController {
 
   static async getAllUsersController(req, res) {
     try {
-      const users = await new user().getAllUsers();
+      const users = await new userModel().getAllUsers();
       res.json(users);
     } catch (err) {
       res.status(500).json({ error: err });
@@ -19,14 +21,15 @@ class userController {
   }
 
   static async addUserController(req, res) {
-    const { username, email, password, permission_level } = req.body;
+    const { username, email, password, permission_level: permission_levelFromBody } = req.body;
     try {
-      const userInstance =new user();
+      const userInstance =new userModel();
       const existingUser = await userInstance.getUserByUsername(username);
       if (existingUser) {
         return res.status(409).json({ error: 'Username already exists.' });
       }
       const hashedPassword = await bcrypt.hash(password, 10);
+      const permission_level = permission_levelFromBody || PERMISSION_LEVELS.USER; // Default permission level      
       const userId = await userInstance.addUser(username, email, hashedPassword, permission_level);
       res.status(201).json({ userId });
     } catch (err) {
@@ -37,7 +40,7 @@ class userController {
   static async deleteUserController(req, res) {
     const userId = req.params.userId;
     try {
-      const affectedRows = await new user().deleteUser(userId);
+      const affectedRows = await new userModel().deleteUser(userId);
       if (affectedRows > 0) {
         res.json({ message: 'User deleted successfully.' });
       } else {
@@ -50,7 +53,7 @@ class userController {
   static async getUserByUsernameController(req, res) {
     const username = req.params.username;
     try {
-      const userInstance = new UserModel();
+      const userInstance = new userModel();
       const user = await userInstance.getUserByUsername(username);
       if (user) {
         res.json(user);
@@ -64,7 +67,7 @@ class userController {
   static async login(req, res) {
     try{
       const { username, password } = req.body;
-      const userInstance = new user();
+      const userInstance = new userModel();
       const user = await userInstance.getUserByUsername(username);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });

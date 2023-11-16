@@ -10,8 +10,9 @@ router.get('/all', userController.getAllUsersController);
 router.post('/users', userController.addUserController); // Use router, not app
 router.delete('/users/:userId', userController.deleteUserController); // Use router, not app
 router.get('/users/username/:username', userController.getUserByUsernameController);
+router.post('/signup', userController.addUserController);
 router.post('/login', userController.login);
-router.post('/signup', async (req, res) => {
+/*router.post('/signup', async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
     try {
         const userInstance = new userModel();
@@ -22,7 +23,7 @@ router.post('/signup', async (req, res) => {
         // console.error(error);
         res.status(500).json({ error: error.message }); // Send the correct status
     }
-});
+});*/
 
 router.post('/admin-signup', isAuthenticated, isAdmin, async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
