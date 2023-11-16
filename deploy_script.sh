@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Pull the latest version of your application image
-docker dapsonic/com619-devops-devops:latest
+docker pull dapsonic/com619-devops-devops:latest
 
 # Pull the MySQL image
 docker pull mysql:5.7

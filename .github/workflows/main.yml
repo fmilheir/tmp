@@ -40,8 +40,8 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/your-image-name:tag .
-          docker push ${{ secrets.DOCKER_USERNAME }}/your-image-name:tag
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/com619-devops-devops:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/com619-devops-devops:latest
 
   deploy:
     needs: publish_to_docker
@@ -55,6 +55,13 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H com619trial.uksouth.cloudapp.azure.com >> ~/.ssh/known_hosts
+
+      - name: Check SSH Key Line Count
+        run: wc -l ~/.ssh/id_rsa
+
+      - name: Check SSH Key Character Count
+        run: wc -m ~/.ssh/id_rsa
+        
       - name: Deploy to Azure VM
         run: |
-          ssh -o StrictHostKeyChecking=no azureuser@com619trial.uksouth.cloudapp.azure.com 'bash -s' < deploy_script.sh
+          ssh -o StrictHostKeyChecking=no com619@com619trial.uksouth.cloudapp.azure.com 'bash -s' < deploy_script.sh
