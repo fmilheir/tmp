@@ -10,6 +10,7 @@ router.get('/all', userController.getAllUsersController);
 router.post('/users', userController.addUserController); // Use router, not app
 router.delete('/users/:userId', userController.deleteUserController); // Use router, not app
 router.get('/users/username/:username', userController.getUserByUsernameController);
+router.get('/verifylogin', userController.verifyLoguin);
 router.post('/login', userController.login);
 router.post('/signup', async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;

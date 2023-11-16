@@ -193,7 +193,7 @@ function Region({list}){    //// (4)
         })
         /////////////////////////////////////////////////////  session
         async function fetchData() {
-            const response = await fetch("http://localhost:3000/user/loginSes");
+            const response = await fetch("http://localhost:3000/user/verifylogin");
             const jsonData = await response.json();
             setData(jsonData.username);
         }
@@ -238,6 +238,7 @@ function Region({list}){    //// (4)
                 const lat = poi.lat;
                 const lon = poi.lon;
                 let markerLet  = [lat,lon]
+                const marker = L.marker(markerLet).addTo(map);
                 //console.log(markerLet)
                 
                // takeMeThere(poi.name,poi.lon,poi.lat,poi.description,poi.id) /// works but buggy

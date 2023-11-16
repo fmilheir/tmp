@@ -83,5 +83,9 @@ class userController {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
+
+  static verifyLoguin(req, res) {
+    res.json({ username: req.session.username || null });
+  }
 }
 export default userController

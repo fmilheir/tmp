@@ -2,20 +2,22 @@ function AppWidget({ area }) {
 
 
     async function verifyLogin() {
-        const loggeduser = await fetch(`http://localhost:3000/user/login`);
+        const loggeduser = await fetch(`http://localhost:3000/user/verifylogin`);
         const user = await loggeduser.json();
+    
         if (user.username) {
             document.getElementById("user").innerHTML = 
-        `<a  role="button" id="logoutBtn">
-            <span class=" text-gray-600 small" id="userMsg">Welcome ${user.username} / Logoff</span>
+            `<a  role="button" id="logoutBtn">
+                <span class=" text-gray-600 small" id="userMsg">Welcome ${user.username} / Logoff</span>
             </a>`
             document.getElementById("logoutBtn").addEventListener("click", logoutUser);
         } else {
             document.getElementById("user").innerHTML = 
-        `<a  href="login.html" role="button">
+            `<a  href="login.html" role="button">
             <span class="text-gray-600 small" id="userMsg">Login</span>
             </a>`
         }
+        
     };
 
     async function logoutUser() {
@@ -103,10 +105,11 @@ function TopBar({ verifyLogin }) {
     verifyLogin()
 
     return (
+        
         <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
             <ul className="navbar-nav ml-auto">
                 <div className="topbar-divider d-none d-sm-block"></div>
-                    <div id="user"></div>
+                <div id="user"></div>
             </ul>
         </nav>
     )
