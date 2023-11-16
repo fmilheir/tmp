@@ -1,7 +1,7 @@
 import userModel from '../Models/userModel.mjs';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { PERMISSION_LEVELS } from '../public/scripts/permissions.mjs';
 
 dotenv.config();

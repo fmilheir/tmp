@@ -20,11 +20,16 @@ jobs:
       - name: npm install and build
         run: |
           npm install
+<<<<<<< HEAD
+          npm run build --if-present  
+=======
           npm run build --if-present
       - name: Rebuild bcrypt
         run: npm rebuild --update-binary bcrypt
+>>>>>>> 70f58c770c365e25fe5a3fe0f317d216cde9093f
       - name: Adjust permissions for jest
         run: chmod +x ./node_modules/.bin/jest
+
       - name: npm test
         run: npm test
 
