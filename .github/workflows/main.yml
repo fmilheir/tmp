@@ -57,4 +57,4 @@ jobs:
           ssh-keyscan -H com619trial.uksouth.cloudapp.azure.com >> ~/.ssh/known_hosts
       - name: Deploy to Azure VM
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no com619@com619trial.uksouth.cloudapp.azure.com 'bash -s' < deploy_script.sh
+          ssh -o StrictHostKeyChecking=no com619@com619trial.uksouth.cloudapp.azure.com 'bash -s' < deploy_script.sh
