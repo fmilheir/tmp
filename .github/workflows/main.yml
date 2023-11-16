@@ -52,7 +52,7 @@ jobs:
       - name: Setup SSH Connection
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | sed 's/\\n/\n/g' > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H com619trial.uksouth.cloudapp.azure.com >> ~/.ssh/known_hosts
 
