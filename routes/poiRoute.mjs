@@ -17,4 +17,6 @@ Poirouter.get('/pointsOfInterest/recommendations/:recommendations', PointsOfInte
 
 Poirouter.get('/pointsOfInterest/:id', PointsOfInterestController.getPointOfInterestByIdController);
 
+Poirouter.post('/recommend/:id', PointsOfInterestController.addRecomendationToPoi);
+
 export default Poirouter;

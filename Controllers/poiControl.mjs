@@ -59,9 +59,9 @@ class PointsOfInterestController {
         } catch (error) {
           res.status(500).json({ error: error.message });
         }
-      }
+    }
     
-      static async getPointOfInterestByIdController(req, res) {
+    static async getPointOfInterestByIdController(req, res) {
         const pointOfInterestId = req.params.id;
     
         try {
@@ -76,9 +76,9 @@ class PointsOfInterestController {
         } catch (error) {
           res.status(500).json({ error: error.message });
         }
-      }
+    }
 
-      static async getPointOfInterestByRegionController(req, res) {
+    static async getPointOfInterestByRegionController(req, res) {
         const pointOfInterestRegion = req.params.region;
     
         try {
@@ -93,7 +93,21 @@ class PointsOfInterestController {
         } catch (error) {
           res.status(500).json({ error: error.message });
         }
+    }
+
+    static async addRecomendationToPoi(req, res) {
+      const poiID = req.params.id
+  
+      try {
+        const pointsOfInterestModel = new PointsOfInterestModel();
+        const pointOfInterestId = await pointsOfInterestModel.addRecomendationToPoi({poiID});
+        res.json({ pointOfInterestId });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
       }
+    }
+
+
 
       
   }

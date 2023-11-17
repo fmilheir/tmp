@@ -81,9 +81,9 @@ function SideBar() {
                 POI Pages
             </div>
             <li className="nav-item">
-                <a className="nav-link" href="/recommend.html">
+                <a className="nav-link" href="/public/pois.html">
                     <i className="fas fa-fw fa-chart-area"></i>
-                    <span>Recommend</span></a>
+                    <span>All Poi's</span></a>
             </li>
             <li className="nav-item">
                 <a className="nav-link" href="/add.html">
@@ -96,6 +96,12 @@ function SideBar() {
                     <span>Review</span></a>
             </li>
             <hr className="sidebar-divider d-none d-md-block" />
+            <div id="ifadmin">
+                <div className="sidebar-heading">
+                    Users
+                </div>
+            </div>
+            
         </ul>
     )
 }
