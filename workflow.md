@@ -25,12 +25,15 @@
 ## Technology overview:
 
 * To enhance modularity, the project leverages ES6 JavaScript runtimes, resulting in the use of '.mjs' file extensions.
+* The server-side infrastructure is implemented using pure Node.js with the Express framework
+* The client-side, React was utilized with the Babel compiler for efficient development and enhanced JavaScript capabilities.
 
 ## .env file / GitHub secrets 
 
 * During development, sensitive information such as database connections and credentials is stored in environment (env) files for security reasons.
 * The .env file is consistently excluded from version control repositories to prevent sensitive information from being exposed.
 * For hosting, GitHub Secrets are employed to securely store sensitive data, which is then referenced within the code for secure runtime access.
+
 
 ## MVC
 
