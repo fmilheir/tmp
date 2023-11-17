@@ -1,6 +1,7 @@
 version: '3'
 services:
   mysql:
+    container_name: mysql-devops
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -9,9 +10,22 @@ services:
       MYSQL_PASSWORD: devops
     ports:
       - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
   devops:
+    container_name: devops-app
     build: .
     ports:
       - "3000:3000"
     depends_on:
-       - mysql
+      - mysql
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_DATABASE=devops
+      - MYSQL_USER=devops
+      - MYSQL_PASSWORD=devops
+
+volumes:
+  mysql-data:
+
+    #command: ["sh", "-c", "while ! nc -z mysql-devops 3306; do sleep 1; done; node your-app.js"]
