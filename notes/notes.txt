@@ -1,0 +1,5 @@
+idea:
+	use cors for verifing domais acessing app
+
+We can put the users as admin, customer adn external, we check these based on the domain of the email registred
+
