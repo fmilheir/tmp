@@ -1,43 +1,39 @@
 function Region({ list }) {
     //// (4)
   
-    const [poi, setPoi] = React.useState([]);
+    const [user, setUsers] = React.useState([]);
   
     React.useEffect(() => {
-      searchpois()
+      searchUsers()
     }, []);
   
-    function recommend(id) {
-      fetch(`http://localhost:3000/poi/recommend/${id}`, {
-        method: "POST",
+    function deleteUser(id) {
+      fetch(`http://localhost:3000/user/users/${id}`, {
+        method: "DELETE",
       }).then((response) => {
         if (response.status === 200) {
-          alert("Recommendation submitted successfully!");
+          alert("User Deleted");
         }
         return response.json();
       });
     }
-  
-    function sharePoi(id) {
-      alert("shared")
-    }
     
   
-    function searchpois() {
+    function searchUsers() {
       /// search /////////////// (4)
 
-          fetch(`http://localhost:3000/poi/pointsOfInterest`, {
+          fetch(`http://localhost:3000/user/all`, {
               method: "GET",
             })
               //.then((response) =>response.json())
               .then((response) => {
                 if (response.status == 404) {
-                  alert("No Poi's to display");
+                  alert("No users to display");
                 }
                 return response.json();
               })
               .then((data) => {
-                setPoi(data);
+                setUsers(data);
                 
               });
       }
@@ -47,25 +43,20 @@ function Region({ list }) {
     return (
       <div>
         <h3 >
-            All Poi's
+            All Users
         </h3>
         <div className="d-sm-flex align-items-center justify-content-between mb-4">
-          {poi.length > 0 ? (
-            poi.map((item) => (
+          {user.length > 0 ? (
+            user.map((item) => (
               <div key={item.id}>
                 <h3                >
-                  Name: {item.name}
+                  Username: {item.username}
                 </h3>
                 <p>
-                  Type: {item.type}, Country: {item.country}, Region:{" "}
-                  {item.region}, Lon: {item.lon}, Lat: {item.lat}, Description:{" "}
-                  {item.description}, Recommendations: {item.recommendations}
+                  Email: {item.email}, Permissions: {item.permission_level}
                 </p>
-                <button id="recomendbut" onClick={() => recommend(item.id)}>
-                  Recommend
-                </button>
-                <button id="shareBtn" onClick={() => sharePoi(item.id)}>
-                  Share
+                <button id="deletUser" onClick={() => deleteUser(item.id)}>
+                  Delete
                 </button>
               </div>
             ))
@@ -78,4 +69,4 @@ function Region({ list }) {
   }
   
   const root = ReactDOM.createRoot(document.getElementById("root"));
-  root.render(<Region list="Poi's List" />);
+  root.render(<Region list="Users List" />);
