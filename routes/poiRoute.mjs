@@ -13,4 +13,33 @@ Poirouter.get('/pointsOfInterest/recommendations/:recommendations', PointsOfInte
 
 Poirouter.get('/pointsOfInterest/:id', PointsOfInterestController.getPointOfInterestByIdController);
 
+//////////////// Swagger Annotations
+//// Tag:
+/** 
+ * @swagger
+ * tags:
+ *  name: Point of Interest
+ *  description: Point of Interest API management 
+ *  
+*/
+
+/**
+* @swagger
+* /poi/pointsOfInterest:
+*   get:
+*     summary: Get all points of interest
+*     tags: [Point of Interest]
+*     description: Retrieve a list of all points of interest.
+*     responses:
+*       200:
+*         description: Successful operation
+*       400:
+*         description: Bad request
+*       404:
+*         description: Not found
+*       500:
+*         description: Server error
+*/
+///////
+
 export default Poirouter;

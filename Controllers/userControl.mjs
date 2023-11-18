@@ -30,7 +30,7 @@ class userController {
       const userId = await userInstance.addUser(username, email, hashedPassword, permission_level);
       res.status(201).json({ userId });
     } catch (err) {
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(500).json({ error: err.message });
     }
   }
     

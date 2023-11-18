@@ -52,4 +52,117 @@ router.post('/checkusername', async(req, res) => {
     }
 });
 
+//////// Swagger Annotations
+//// Schema:
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *      User:
+ *          type: object
+ *          required:
+ *              - username
+ *              - email
+ *              - password
+ *              - permission_level
+ *          properties:
+ *              username:
+ *                  type: string
+ *                  description: The username of the user.
+ *              email:
+ *                  type: string
+ *                  description: The email address of the user.
+ *              password:
+ *                  type: string
+ *                  description: The password of the user.
+ *              permission_level:
+ *                  type: integer
+ *                  description: The permission level of the user.
+ *          example:
+ *              username: testuser
+ *              email: testuser@exampl.com
+ *              password: testpassword
+ *              permission_level: 1
+ */
+//// Tag: 
+/** 
+ * @swagger
+ * tags:
+ *  name: Users
+ *  description: User API management 
+ *  
+*/
+/////// get all users
+/**
+* @swagger
+* /user/all:
+*   get:
+*     summary: Get all users
+*     tags: [Users]
+*     description: Retrieve a list of all users.
+*     responses:
+*       200:
+*         description: Successful operation
+*         content:
+*           application/json:
+*             schema:
+*               type: array
+*               items:
+*                 $ref: '#/components/schemas/User'
+*       400:
+*         description: Bad request
+*       404:
+*         description: Not found
+*       500:
+*         description: Server error
+*/
+/////////////// add user
+/**
+ * @swagger
+ * /user/users:
+ *   post:
+ *     summary: Create a new user
+ *     description: Create a new user with the provided username, email, password, and permission level.
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *            $ref: '#/components/schemas/User'
+ *             
+ *     responses:
+ *       201:
+ *         description: User created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 userId:
+ *                   type: string
+ *                   description: The unique ID of the created user.
+ *       409:
+ *         description: Username already exists.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating that the username already exists.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating an internal server error.
+ */
+
 export default router;

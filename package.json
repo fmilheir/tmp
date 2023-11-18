@@ -9,7 +9,9 @@
     "inity": "^1.0.5",
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
-    "mysql2": "^3.6.2"
+    "mysql2": "^3.6.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
