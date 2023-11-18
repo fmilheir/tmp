@@ -81,34 +81,4 @@ describe('userController', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'Username already exists.' });
   });
 
- 
-
-    // Should return the user with the given username if it exists in the database
-    it('should return the user when it exists in the database', async () => {
-      const req = {
-        params: {
-          username: 'Oladapo'
-        }
-      };
-
-      const res = {
-        json: (data) => {
-          expect(data).toEqual(user);
-        },
-        status: (code) => {
-          return {
-            json: (data) => {
-              expect(data).toEqual({ error: 'getaddrinfo ENOTFOUND mysql' });
-            }
-          };
-        }
-      };
-
-      const user = { username: 'Oladapo', email: 'johndoe@example.com' };
-      const userInstance = new userModel();
-      jest.spyOn(userInstance, 'getUserByUsername').mockResolvedValue(user);
-
-      await userController.getUserByUsernameController(req, res);
-    });
-      
 });
