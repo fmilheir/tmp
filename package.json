@@ -9,11 +9,12 @@
     "inity": "^1.0.5",
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
-    "mysql2": "^3.6.2"
+    "mysql2": "^3.6.2",
+    "nodemailer": "^6.9.7"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
-    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-env": "^7.23.3",
     "@jest/transform": "^29.7.0",
     "@types/jest": "^29.5.7",
     "babel-jest": "^29.7.0",
