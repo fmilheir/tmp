@@ -1,5 +1,3 @@
-import "/i18n";
-
 let map;
 let markerGroup;
 
