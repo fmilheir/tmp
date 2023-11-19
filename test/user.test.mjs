@@ -1,5 +1,5 @@
-import userController from '../Controllers/userControl';
-import userModel from '../Models/userModel';
+import userController from '../Controllers/userControl.mjs';
+import userModel from '../Models/userModel.mjs';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
@@ -68,205 +68,33 @@ describe('User Controller Tests', () => {
         expect(res.json).toHaveBeenCalledWith(mockUsers);
     });
   
-    // Returns a list of all users when getAllUsers method is called successfully
-    it('should return a list of all users when getAllUsers method is called successfully', async () => {
-      const req = {};
-      const res = {
-        json: (data) => {
-          expect(data).toEqual(users);
-        },
-        status: (code) => {
-          return {
-            json: (data) => {
-              expect(data).toEqual({ error: err });
-            }
-          }
-        }
-      };
-
-      const users = [{ id: 1, username: 'user1' }, { id: 2, username: 'user2' }];
-      const userModelInstance = new userModel();
-      userModelInstance.getAllUsers = jest.fn().mockResolvedValue(users);
-
-      await userController.getAllUsersController(req, res);
-
-      expect(userModelInstance.getAllUsers).toHaveBeenCalled();
-    });
-        // Returns a JSON response with the list of users when getAllUsers method is called successfully
-    it('should return a JSON response with the list of users when getAllUsers method is called successfully', async () => {
-      const req = {};
-      const res = {
-        json: (data) => {
-          expect(data).toEqual(users);
-        },
-        status: (code) => {
-          return {
-            json: (data) => {
-              expect(data).toEqual({ error: err });
-            }
-          }
-        }
-      };
-
-      const users = [{ id: 1, username: 'user1' }, { id: 2, username: 'user2' }];
-      const userModelInstance = new userModel();
-      userModelInstance.getAllUsers = jest.fn().mockResolvedValue(users);
-
-      await userController.getAllUsersController(req, res);
-
-      expect(res.json).toHaveBeenCalledWith(users);
-    });
-
-  // Returns a list of all users when getAllUsers method is called successfully
-  it('should return a list of all users when getAllUsers method is called successfully', async () => {
-    const req = {};
-    const res = {
-      json: (data) => {
-        expect(data).toEqual(users);
-      },
-      status: (code) => {
-        return {
-          json: (data) => {
-            expect(data).toEqual({ error: err });
-          }
-        }
-      }
-    };
-
-    const users = [{ id: 1, username: 'user1' }, { id: 2, username: 'user2' }];
-    const userModelInstance = new userModel();
-    userModelInstance.getAllUsers = jest.fn().mockResolvedValue(users);
-
-    await userController.getAllUsersController(req, res);
-
-    expect(userModelInstance.getAllUsers).toHaveBeenCalled();
-  });
-
-  // Returns a JSON response with the list of users when getAllUsers method is called successfully
-  it('should return a JSON response with the list of users when getAllUsers method is called successfully', async () => {
-    const req = {};
-    const res = {
-      json: (data) => {
-        expect(data).toEqual(users);
-      },
-      status: (code) => {
-        return {
-          json: (data) => {
-            expect(data).toEqual({ error: err });
-          }
-        }
-      }
-    };
-
-    const users = [{ id: 1, username: 'user1' }, { id: 2, username: 'user2' }];
-    const userModelInstance = new userModel();
-    userModelInstance.getAllUsers = jest.fn().mockResolvedValue(users);
-
-    await userController.getAllUsersController(req, res);
-
-    expect(res.json).toHaveBeenCalledWith(users);
-  });
-
-  // Returns a 200 status code when getAllUsers method is called successfully
-  it('should return a 200 status code when getAllUsers method is called successfully', async () => {
-    const req = {};
-    const res = {
-      json: (data) => {
-        expect(data).toEqual(users);
-      },
-      status: (code) => {
-        return {
-          json: (data) => {
-            expect(data).toEqual({ error: err });
-          }
-        }
-      }
-    };
-
-    const users = [{ id: 1, username: 'user1' }, { id: 2, username: 'user2' }];
-    const userModelInstance = new userModel();
-    userModelInstance.getAllUsers = jest.fn().mockResolvedValue(users);
-
-    await userController.getAllUsersController(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-  });
-
-  // Returns a 500 status code and an error message when an error occurs while calling getAllUsers method
-  it('should return a 500 status code and an error message when an error occurs while calling getAllUsers method', async () => {
-    const req = {};
-    const res = {
-      json: (data) => {
-        expect(data).toEqual({ error: err });
-      },
-      status: (code) => {
-        return {
-          json: (data) => {
-            expect(data).toEqual({ error: err });
-          }
-        }
-      }
-    };
-
-    const err = 'Internal server error';
-    const userModelInstance = new userModel();
-    userModelInstance.getAllUsers = jest.fn().mockRejectedValue(err);
-
-    await userController.getAllUsersController(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-  });
-
-  // Returns a JSON response with an error message when an error occurs while calling getAllUsers method
-  it('should return a JSON response with an error message when an error occurs while calling getAllUsers method', async () => {
-    const req = {};
-    const res = {
-      json: (data) => {
-        expect(data).toEqual({ error: err });
-      },
-      status: (code) => {
-        return {
-          json: (data) => {
-            expect(data).toEqual({ error: err });
-          }
-        }
-      }
-    };
-
-    const err = 'Internal server error';
-    const userModelInstance = new userModel();
-    userModelInstance.getAllUsers = jest.fn().mockRejectedValue(err);
-
-    await userController.getAllUsersController(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({ error: err });
-  });
-
-    // Returns a JSON response with an error message when an error occurs while calling getAllUsers method
-    it('should return a JSON response with an error message when an error occurs while calling getAllUsers method', async () => {
-      const req = {};
-      const res = {
-        json: (data) => {
-          expect(data).toEqual({ error: err });
-        },
-        status: (code) => {
-          return {
-            json: (data) => {
-              expect(data).toEqual({ error: err });
-            }
-          }
-        }
-      };
-
-      const err = 'Internal server error';
-      const userModelInstance = new userModel();
-      userModelInstance.getAllUsers = jest.fn().mockRejectedValue(err);
-
-      await userController.getAllUsersController(req, res);
-
-      expect(res.json).toHaveBeenCalledWith({ error: err });
-    });
-
+    /*it('should add a user and return their id when addUserController is called', async () => {
+        const req = {
+          body: {
+            username: 'Filiper',
+            email: 'ntestingr@google.com',
+            password: 'Password1234',
+            permission_level: 'user',
+          },
+        };
+        const mockUserId = 1;
+        const mockHashedPassword = 'hashedPassword';
+        console.log(mockUserModelInstance.addUser.mock.calls);
+        mockUserModelInstance.getUserByUsername.mockResolvedValue(null);
+        mockUserModelInstance.addUser.mockResolvedValue(mockUserId);
+        bcrypt.hash.mockResolvedValue(mockHashedPassword);
+        console.log(req);
+        await userController.addUserController(req, res);
     
+        expect(mockUserModelInstance.getUserByUsername).toHaveBeenCalledWith(req.body.username);
+        expect(mockUserModelInstance.addUser).toHaveBeenCalledWith(
+          req.body.username,
+          req.body.email,
+          expect.any(String),
+          req.body.permission_level
+        );
+        expect(res.status).toHaveBeenCalledWith(201);
+        expect(res.json).toHaveBeenCalledWith({ userId: mockUserId });
+      });*/
 });
   

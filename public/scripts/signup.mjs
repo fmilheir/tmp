@@ -11,13 +11,6 @@ function Signup(){
             setError("Passwords don't match!");
             return;
         }
-        // Validate email
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            setError("Invalid email format");
-            return;
-        }
-
 
         if (!username || !email || !password) {
             setError("Please fill in all fields");
@@ -44,21 +37,16 @@ function Signup(){
                     },
                     body: JSON.stringify(data),
                 })
-               .then((response) => {
-                if (!response.ok && response.status !== 201) {
-                    throw new Error(`HTTP error ${response.status}`);
-                   } 
-                    //console.log(response);
-                    return response.json()
-                })
-               .then(data => {
-                    if (data.verificationCode) {
-                        localStorage.setItem('userEmail', email); // Store email in local storage
-                        window.location.href = `http://localhost:3000/verificationcode?code=${data.verificationCode}`;
-                    } else {
-                        throw new Error('Verification code not recieved')
+                .then((response) => {
+                    if (response.ok) {
+                        // If the user was created successfully, redirect to the login page
+                        window.location.href = '/login';
                     }
-               })
+                })
+                .then(() => {
+                    // Handle successful signup
+                    setError('');
+                })
                 .catch((error) => {
                     setError(error.message);
                 });

@@ -7,10 +7,7 @@ function handleLogin(username, password) {
         },
         body: JSON.stringify(loginDetails),
     })
-    .then(response => {
-        console.log(response);
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.error) {
             throw new Error(data.error);
@@ -37,7 +34,6 @@ function Login() {
             <form onSubmit={handleFormSubmit}>
                 <input type="text" placeholder="Username" id="username" />
                 <input type="password" placeholder="Password" id="password" />
-                <a href="/verify">Forgot Password</a>
                 <button type="submit">Login</button>
             </form>
         </div>
