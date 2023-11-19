@@ -61,57 +61,48 @@ function AppWidget({ area }) {
 
 function SideBar() {
   return (
-    <ul
-      className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
-      id="accordionSidebar"
-    >
-      <a
-        className="sidebar-brand d-flex align-items-center justify-content-center"
-        href="/"
+    <nav className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+    style={{position: "-webkit-sticky",
+      position: "sticky",
+      top: 0}}>
+      <ul
+        className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion "
+        id="accordionSidebar"
       >
-        <div className="sidebar-brand-icon rotate-n-15">
-          <i className="fas fa-laugh-wink"></i>
-        </div>
-        <div className="sidebar-brand-text mx-3">Dev Ops</div>
-      </a>
-      <hr className="sidebar-divider my-0" />
-      <li className="nav-item active">
-        <a className="nav-link" href="/">
-          <i className="fas fa-fw fa-tachometer-alt"></i>
-          <span>Main Page</span>
+        <a
+          className="sidebar-brand d-flex align-items-center justify-content-center"
+          href="/"
+        >
+          <div className="sidebar-brand-icon rotate-n-15">
+            <i className="fas fa-laugh-wink"></i>
+          </div>
+          <div className="sidebar-brand-text mx-3">Dev Ops</div>
         </a>
-      </li>
-      <hr className="sidebar-divider" />
-      <div className="sidebar-heading">POI Pages</div>
-      <li className="nav-item">
-        <a className="nav-link" href="/public/pois.html">
-          <i className="fas fa-fw fa-chart-area"></i>
-          <span>All Poi's</span>
-        </a>
-      </li>
-      <li className="nav-item">
-        <a className="nav-link" href="/add.html">
-          <i className="fas fa-fw fa-table"></i>
-          <span>Add</span>
-        </a>
-      </li>
-      <li className="nav-item">
-        <a className="nav-link" href="/review.html">
-          <i className="fas fa-fw fa-table"></i>
-          <span>Review</span>
-        </a>
-      </li>
-      <hr className="sidebar-divider d-none d-md-block" />
-      <div id="ifadmin">
-        <div className="sidebar-heading">Users</div>
-        <li className="nav-item">
-          <a className="nav-link" href="/public/users.html">
-            <i className="fas fa-fw fa-table"></i>
-            <span>Users</span>
+        <hr className="sidebar-divider my-0" />
+        <li className="nav-item active">
+          <a className="nav-link" href="/">
+            <i className="fas fa-fw fa-tachometer-alt"></i>
+            <span>Main Page</span>
           </a>
         </li>
-      </div>
-    </ul>
+        <hr className="sidebar-divider d-none d-md-block" />
+        <li className="nav-item">
+          <a className="nav-link" href="/public/pois.html">
+            <i className="fas fa-fw fa-table"></i>
+            <span>All Poi's</span>
+          </a>
+        </li>
+        <hr className="sidebar-divider d-none d-md-block" />
+        <div id="ifadmin">
+          <li className="nav-item">
+            <a className="nav-link" href="/public/users.html">
+              <i className="fas fa-fw fa-table"></i>
+              <span>Users</span>
+            </a>
+          </li>
+        </div>
+      </ul>
+    </nav>
   );
 }
 

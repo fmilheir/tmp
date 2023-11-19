@@ -2,7 +2,7 @@ import express from "express";
 import cors from  'cors';
 import UserRoute from '../../routes/userRoute.mjs';
 import PoiRouter from "../../routes/poiRoute.mjs";
-
+import DataTable from 'datatables.net-dt';
 
 const app = express();
 

@@ -1,6 +1,10 @@
 # Devops_com619
 Devopers
 
+The guest can search for a POI.  get a result but can not add to the list of POI 
+The user can add, search and upload pictures to the POI, edit his profile
+But the admin can delete a user, delete a POI but can not edit, can delete a user edit some information on the users profile except the users password, email address and the ID
+
 added stuff to search a poi by region 
     - create a new function in poiControler
 

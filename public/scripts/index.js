@@ -239,64 +239,64 @@ function Region({ list }) {
   }
 
   function sharePoi(id) {
-    alert("shared")
+    alert(`Shared ${id}`);
   }
-  
 
   function searchByRegion() {
     /// search /////////////// (4)
-    
+
     const regionName = document.getElementById("searchValue").value;
-    console.log(regionName)
-    if (regionName.trim ==""){
-        alert("Please enter a region first");
-    } else{
-        fetch(`http://localhost:3000/poi/pointsOfInterest/${regionName}`, {
-            method: "GET",
-          })
-            //.then((response) =>response.json())
-            .then((response) => {
-              if (response.status == 404) {
-                alert("Please enter a region first");
-              }
-              return response.json();
-            })
-            .then((data) => {
-              setPoi(data);
-              //console.log(data)
-              ///////////////////// Add each POI to the markers array and create a marker for it
-              data.forEach((poi) => {
-                ///////////////////////////////////////////////////(13)
-                const lat = poi.lat;
-                const lon = poi.lon;
-                let markerLet = [lat, lon];
-                const marker = L.marker(markerLet).addTo(map);
-                marker.bindPopup(`
+    console.log(regionName);
+    if (regionName.trim == "") {
+      alert("Please enter a region first");
+    } else {
+      fetch(`http://localhost:3000/poi/pointsOfInterest/${regionName}`, {
+        method: "GET",
+      })
+        //.then((response) =>response.json())
+        .then((response) => {
+          if (response.status == 404) {
+            alert("Please enter a region first");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setPoi(data);
+          //console.log(data)
+          ///////////////////// Add each POI to the markers array and create a marker for it
+          data.forEach((poi) => {
+            ///////////////////////////////////////////////////(13)
+            const lat = poi.lat;
+            const lon = poi.lon;
+            let markerLet = [lat, lon];
+            const marker = L.marker(markerLet).addTo(map);
+            marker.bindPopup(`
                           <h3 id="namep" >${poi.name}</h3>
                           <img src="/photos/${poi.id}.jpeg" alt="There is no picture" width="200" height="300" onError="this.style.display='none';">
                           <p id="descp"> ${poi.description}</p>
                           <p id="idp" style="display:none">${poi.id}</p> 
                           <button id="recomendbut">Recommend</button> <br>
                           `);
-              });
-              addEventListener('click', (event)=>{
-                if(event.target.id ==='recomendbut'){
-                    recommend(document.getElementById("idp").textContent)
-                }
-            })
-            });
+          });
+          addEventListener("click", (event) => {
+            if (event.target.id === "recomendbut") {
+              recommend(document.getElementById("idp").value);
+            }
+          });
+        });
     }
 
     /////////////////////////////////////////////// (13) till here
   }
 
   // function to click on the poi name from the list and redirect the map to it
-  function takeMeThere(lon,lat){   /////////// (8) //// and (13)
+  function takeMeThere(lon, lat) {
+    /////////// (8) //// and (13)
 
-    let pos = [lat,lon]
+    let pos = [lat, lon];
     map.setView(pos, 14);
-    window.scrollTo({ top: 0, behavior: 'smooth' });  // takes the user to the map! 
-}
+    window.scrollTo({ top: 0, behavior: "smooth" }); // takes the user to the map!
+  }
 
   const poiNameStyle = {
     // style
@@ -374,53 +374,66 @@ function Region({ list }) {
               id="searchValue" /*onChange={updateRegionf}*/
             />
             <br />
-            <input
-              type="button"
+            <button
               style={{ width: `100%` }}
-              className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+              className="d-sm-inline-block btn btn-sm btn-primary shadow-sm"
               id="searchbtn"
-              value="Search"
+              value=""
               onClick={searchByRegion}
-            />
+            >
+              Search
+            </button>
           </fieldset>
         </div>
       </div>
       `
-      <div className="d-sm-flex align-items-center justify-content-between mb-4">
+      <div className="d-sm-flex align-items-center mb-4">
         <div
           id="map2"
           style={{ width: `100%`, height: `50vh`, margin: `50px` }}
         ></div>
       </div>
-      <div className="d-sm-flex align-items-center justify-content-between mb-4">
+      <div className="d-sm-flex row mb-4">
         {poi.length > 0 ? (
           poi.map((item) => (
-            <div key={item.id}>
-              <h3
-                id="nameh3"
-                style={poiNameStyle}
-                onClick={() =>
-                  takeMeThere(
-                    item.lon,
-                    item.lat
-                  )
-                }
-              >
-                Name: {item.name}
-              </h3>
-              <p>
-                Type: {item.type}, Country: {item.country}, Region:{" "}
-                {item.region}, Lon: {item.lon}, Lat: {item.lat}, Description:{" "}
-                {item.description}, Recommendations: {item.recommendations}
-              </p>
-              <button id="recomendbut" onClick={() => recommend(item.id)}>
-                Recommend
-              </button>
-              <button id="shareBtn" onClick={() => sharePoi(item.id)}>
-                Share
-              </button>
+            <div class="col-xl-3 col-md-6">
+              <div className="card bg-gradient-dark text-white">
+                <div className="card-body">
+                  <div key={item.id}>
+                    <h3
+                      className="card-title"
+                      id="nameh3"
+                      style={poiNameStyle}
+                      onClick={() => takeMeThere(item.lon, item.lat)}
+                    >
+                      Name: {item.name}
+                    </h3>
+                    <p>Type: {item.type}</p>
+                    <p>Country: {item.country}</p>
+                    <p>Region: {item.region}</p>
+                    <p>Lon: {item.lon}</p>
+                    <p>Lat: {item.lat}</p>
+                    <p>Description: {item.description}</p>
+                    <p>Recommendations:{item.recommendations}</p>
+                    <button
+                      style={{ margin: `5px` }}
+                      className=" d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                      id="recomendbut"
+                      onClick={() => recommend(item.id)}
+                    >
+                      Recommend
+                    </button>
+                    <button
+                      className=" d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                      id="shareBtn"
+                      onClick={() => sharePoi(item.id)}
+                    >
+                      Share
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-            
           ))
         ) : (
           <p></p>
