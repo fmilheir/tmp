@@ -5,7 +5,7 @@ import PointsOfInterestController from '../Controllers/poiControl.mjs';
 
 Poirouter.get('/pointsOfInterest', PointsOfInterestController.getAllPointsOfInterestController);
 
-Poirouter.get('/pointsOfInterest/:region', PointsOfInterestController.getPointOfInterestByRegionController);
+Poirouter.get('/pointsOfInterestByRegion/:region', PointsOfInterestController.getPointOfInterestByRegionController);
 
 //Poirouter.post('/pointsOfInterest/:name/:type/:country/:region/:lon/:lat/:description', PointsOfInterestController.addPointOfInterestController);
 

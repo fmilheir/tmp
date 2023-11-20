@@ -39,7 +39,7 @@ added stuff to search a poi by region
 
     - added a new route to be able to get all the data
 
-        Poirouter.get('/pointsOfInterest/:region', PointsOfInterestController.getPointOfInterestByRegionController);
+        Poirouter.get('/pointsOfInterestByRegion/:region', PointsOfInterestController.getPointOfInterestByRegionController);
 
 
 Added stuff to manage the recomendation 

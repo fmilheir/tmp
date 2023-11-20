@@ -7,8 +7,7 @@ function Region({ title }) {
 //
 //
 //
-  const [region, setRegion] = React.useState("");
-  const [data, setData] = React.useState(null);
+
   const [poi, setPoi] = React.useState([]);
   const [map, setMap] = React.useState(null);
   
@@ -254,7 +253,7 @@ function Region({ title }) {
     if (regionName.trim == "") {
       alert("Please enter a region first");
     } else {
-      fetch(`http://localhost:3000/poi/pointsOfInterest/${regionName}`, {
+      fetch(`http://localhost:3000/poi/pointsOfInterestByRegion/${regionName}`, {
         method: "GET",
       })
         //.then((response) =>response.json())
@@ -319,7 +318,7 @@ function Region({ title }) {
               placeholder="Search for a Region"
               aria-label="Search"
               aria-describedby="basic-addon2"
-              id="searchValue" /*onChange={updateRegionf}*/
+              id="searchValue"
             />
             <br />
             <button
