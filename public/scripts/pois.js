@@ -1,11 +1,12 @@
-function Region({ list }) {
+function Pois({ title }) {
   //// (4)
 
-  const [poi, setPoi] = React.useState([]);
+  
 
-  React.useEffect(() => {
-    searchpois();
-  }, []);
+ 
+
+  const [poi, setPoi] = React.useState([]);
+  
 
   function recommend(id) {
     fetch(`http://localhost:3000/poi/recommend/${id}`, {
@@ -22,10 +23,18 @@ function Region({ list }) {
     alert("shared");
   }
 
-  function searchpois() {
-    /// search /////////////// (4)
 
-    fetch(`http://localhost:3000/poi/pointsOfInterest`, {
+  function deletePoi(id) {
+    fetch(`http://localhost:3000/poi/pointsOfInterest/${id}`, {
+      method: "DELETE",
+    }).then((response) => {
+      if (response.status === 200) {
+        alert("Poi Deleted");
+      }
+      return response.json();
+    });
+  }
+  fetch(`http://localhost:3000/poi/pointsOfInterest`, {
       method: "GET",
     })
       //.then((response) =>response.json())
@@ -38,24 +47,11 @@ function Region({ list }) {
       .then((data) => {
         setPoi(data);
       });
-  }
-
-  function deletePoi(id) {
-    fetch(`http://localhost:3000/poi/pointsOfInterest/${id}`, {
-      method: "DELETE",
-    }).then((response) => {
-      if (response.status === 200) {
-        alert("Poi Deleted");
-      }
-      return response.json();
-    });
-  }
 
   /////////////////////////////////////////////// (13) till here
-
   return (
     <div>
-      <h3>{list}</h3>
+      <h3>{title}</h3>
       <div className="d-sm-flex align-items-center mb-4">
         <table  id="table_id" className="display table" style={{ width: `100%` }}>
           <thead>
@@ -65,7 +61,7 @@ function Region({ list }) {
               <th>Country</th>
               <th>Region</th>
               <th>Description</th>
-              <th>Recommendations</th>
+              <th>Rec</th>
               <th></th>
               <th></th>
               <th></th>
@@ -78,7 +74,7 @@ function Region({ list }) {
               <th>Country</th>
               <th>Region</th>
               <th>Description</th>
-              <th>Recommendations</th>
+              <th>Rec</th>
               <th></th>
               <th></th>
               <th></th>
@@ -111,9 +107,7 @@ function Region({ list }) {
                   </td>
                 </tr>
               ))
-            ) : (
-              <p></p>
-            )}
+            ) :""}
           </tbody>
         </table>
       </div>
@@ -122,4 +116,4 @@ function Region({ list }) {
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<Region list="Poi's List" />);
+root.render(<Pois title="Poi's List" />);

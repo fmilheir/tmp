@@ -77,6 +77,18 @@ Added stuff to manage the recomendation
     - data base type needs to be changed to Int and not text
 
 
+added stuff to verify user logged on on sessions 
+
+    -added to controll(it was the way i managed to get the sessions and use them in JS)
+
+        static verifyLoguin(req, res) {
+            res.json({ username: req.session.username || null });
+        }
+
+    -added route to be abe to call it on the JS
+        router.get('/verifylogin', userController.verifyLoguin);
+
+
 
 
 

@@ -1,14 +1,18 @@
-function Region({ list }) {
+function Region({ title }) {
   //// (4)
-
+//check use of this variables//
+//
+//
+//
+//
+//
+//
   const [region, setRegion] = React.useState("");
+  const [data, setData] = React.useState(null);
   const [poi, setPoi] = React.useState([]);
   const [map, setMap] = React.useState(null);
-
-  const [data, setData] = React.useState(null);
-
-  let [review, setReview] = React.useState("");
-
+  
+ 
   React.useEffect(() => {
     /// map (8)
 
@@ -303,66 +307,10 @@ function Region({ list }) {
     cursor: "pointer",
   };
 
-  /*function login(req,res,callback){//////////// (10)
-        const username = document.getElementById("uname").value;
-        const password = document.getElementById("pass").value;
-        const loginDetails = {username,password};
-        try{
-             const response = fetch(`http://localhost:3000/user/login`,{
-                method:"POST", 
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(loginDetails)
-            })
-            .then((response) => {
-                if (response.status === 200) {
-                    alert("Login successful!");
-                    window.location.reload();     // necessary for the GUI to work, show and hide
-                    return response.json();
-                    //console.log(req.session.username)
-                } else if(response.status === 401){
-                    alert("Wrong username or password!");
-                }
-                else{
-                    alert("Login failed!");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                callback(data);  });
-
-        }catch(e){
-            alert(`Error: ${e}`);
-        }
-    }-//
-    
-    function logout(){ /////////////////10
-        fetch(`http://localhost:3000/user/logout`,{
-            method:"POST"
-        })
-        .then((response) => {
-            if (response.status === 200) {
-                alert("Logout successful!");
-                window.location.reload();
-            }else{
-                alert("Logout failed!");
-            }
-            return response.json();
-        })
-    }*/
-
-  function show() {
-    //////////10
-    const loginDiv = document.getElementById("logindiv");
-    loginDiv.style.display =
-      loginDiv.style.display === "none" ? "block" : "none";
-  }
-
   return (
-    <div>
+    <div className= "container-fluid">
       <div>
-        <h1 className="h3 mb-0 text-gray-800">{list}</h1>
+        <h1 className="h3 mb-0 text-gray-800">{title}</h1>
         <div className="d-sm-flex align-items-center justify-content-between mb-4">
           <fieldset style={{ width: `100%` }}>
             <input
@@ -393,11 +341,11 @@ function Region({ list }) {
           style={{ width: `100%`, height: `50vh`, margin: `50px` }}
         ></div>
       </div>
-      <div className="d-sm-flex row mb-4">
+      <div className="row">
         {poi.length > 0 ? (
           poi.map((item) => (
             <div class="col-xl-3 col-md-6">
-              <div className="card bg-gradient-dark text-white">
+              <div className="card bg-gradient-dark text-white shadow">
                 <div className="card-body">
                   <div key={item.id}>
                     <h3
@@ -444,4 +392,4 @@ function Region({ list }) {
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<Region list="Search by region" />);
+root.render(<Region title="Search by region" />);
