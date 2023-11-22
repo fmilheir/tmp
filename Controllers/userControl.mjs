@@ -152,6 +152,9 @@ class userController {
     }
   }
 
+  static verifyLoguin(req, res) {
+    res.json({ username: req.session.username || null });
+  }
   static async handlePasswordForm(req, res) {
     const { password, confirmPassword, token } = req.body;
     if (password !== confirmPassword) {
