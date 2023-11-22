@@ -30,64 +30,62 @@ function Users({ title }) {
     .then((data) => {
       setUsers(data);
     });
+
+
+  const tableResult = user.map((item) => (
+    <tr key={item.id}>
+      <td>{item.username}</td>
+      <td>{item.email}</td>
+      <td>{item.permission_level}</td>
+      <td>
+        <button
+          className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+          id="editUser"
+          onClick={() => editUser(item.id)}
+        >
+          Edit
+        </button>
+      </td>
+      <td>
+        <button
+          className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+          id="deletUser"
+          onClick={() => deleteUser(item.id)}
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  ));
+  const wholetalbe = (
+    <table id="table_id" className="display table" style={{ width: `100%` }}>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Permission</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Permission</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </tfoot>
+      <tbody>{tableResult}</tbody>
+    </table>
+  );
+  $("#table_id").DataTable();
   return (
     <div>
       <h3>{title}</h3>
-      <div className="d-sm-flex align-items-center mb-4">
-        <table
-          id="table_id"
-          className="display table"
-          style={{ width: `100%` }}
-        >
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Permission</th>
-              <th></th>
-              <th></th>
-            </tr>
-          </thead>
-          <tfoot>
-            <tr>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Permission</th>
-              <th></th>
-              <th></th>
-            </tr>
-          </tfoot>
-          <tbody>
-            {user.length > 0
-              ? user.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.username}</td>
-                    <td>{item.email}</td>
-                    <td>{item.permission_level}</td>
-                    <td>
-                      <button
-                        className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                        id="editUser"
-                        onClick={() => editUser(item.id)}
-                      >
-                        Edit
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                        id="deletUser"
-                        onClick={() => deleteUser(item.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              : ""}
-          </tbody>
-        </table>
-      </div>
+      <div className="d-sm-flex align-items-center mb-4"></div>
+        {wholetalbe}
     </div>
   );
 }
