@@ -5,8 +5,11 @@ export function LanguageSelector() {
 	const { i18n } = useTranslation();
 
 	const changeLanguage = (lng) => {
+		console.log("Changing language to:", lng);
 		i18n.changeLanguage(lng);
 	};
+
+	console.log("LanguageSelector component is mounting");
 
 	return (
 		<div>
