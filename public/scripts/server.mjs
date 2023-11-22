@@ -4,6 +4,9 @@ import userRoute from '../../routes/userRoute.mjs';
 import path from 'path';
 import { fileURLToPath } from "url";
 const __dirname = path.resolve();
+import cors from "cors";
+import userRoute from "../../routes/userRoute.mjs";
+
 
 const app = express();
 
@@ -65,16 +68,29 @@ app.get('/reset-password', (req, res) => {
 app.get("/verificationcode", (req, res) => {
     const verificationCode = req.query.code;
     res.redirect(`/public/verificationcode.html?code=${verificationCode}`);
+app.use("/user", userRoute);
+app.use(express.static("public"));
+app.use("/public", express.static("./public/"));
+
+app.get("/", (req, res) => {
+	res.redirect("/public/index.html"); // only this one works
+});
+
+app.get("/login", (req, res) => {
+	res.redirect("/public/login.html");
 });
 
 app.use((req, res, next) => {
-    res.status(404).send("Sorry can't find that!")
+	res.status(404).send("Sorry can't find that!");
 });
 
 app.use((err, req, res, next) => {
+
     console.error(err.stack)
     res.status(500).send({ error: err.message || 'Something broke!' });
 
+	console.error(err.stack);
+	res.status(500).send("Something broke!");
 });
 
 export default app;

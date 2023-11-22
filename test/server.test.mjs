@@ -1,3 +1,4 @@
+
 import request from 'supertest';
 import app from '../public/scripts/server.mjs'; 
 
@@ -20,4 +21,4 @@ describe('Express server', () => {
     const response = await request(app).get('/public/index.html');
     expect(response.status).toBe(200);
   });
-});
+
