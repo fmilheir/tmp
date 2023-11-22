@@ -1,7 +1,7 @@
 import express from "express";
 import cors from  'cors';
 import UserRoute from '../../routes/userRoute.mjs';
-import PoiRouter from "../../routes/poiRoute.mjs";
+import Poirouter from "../../routes/poiRoute.mjs";
 import path from 'path';
 import { fileURLToPath } from "url";
 const __dirname = path.resolve();
@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/user', UserRoute);
-app.use('/poi', PoiRouter);
+app.use('/poi', Poirouter);
 app.use(express.static("publid"));
 app.use("/public", express.static('./public/'));
 
