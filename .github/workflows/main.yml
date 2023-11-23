@@ -43,7 +43,7 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/com619-devops-devops:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/com619-devops-devops:latest
-
+          
   deploy:
     needs: publish_to_docker
     runs-on: ubuntu-latest
