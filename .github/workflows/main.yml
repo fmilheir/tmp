@@ -54,9 +54,12 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          if [ $? -ne 0 ]; then echo "Writing key failed"; exit 1; fi
           chmod 600 ~/.ssh/id_rsa
+          if [ $? -ne 0 ]; then echo "Chmod failed"; exit 1; fi
           ssh-keyscan -H com619trial.uksouth.cloudapp.azure.com >> ~/.ssh/known_hosts
-
+          if [ $? -ne 0 ]; then echo "Ssh-keyscan failed"; exit 1; fi
+          
       - name: Check SSH Key Line Count
         run: wc -l ~/.ssh/id_rsa
 

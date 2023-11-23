@@ -8,9 +8,9 @@ docker pull mysql:5.7
 
 # Stop existing containers (if any)
 docker stop myapp-db || true
-docker rm myapp-db || true
+docker rm -f myapp-db || true
 docker stop myapp || true
-docker rm myapp || true
+docker rm -f myapp || true
 
 # Start MySQL container
 docker run -d --name myapp-db -e MYSQL_ROOT_PASSWORD=devops -e MYSQL_DATABASE=myappdb -p 3306:3306 mysql:5.7
