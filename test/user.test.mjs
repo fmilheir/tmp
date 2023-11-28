@@ -1,100 +1,84 @@
 import userController from '../Controllers/userControl.mjs';
 import userModel from '../Models/userModel.mjs';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import dotenv from 'dotenv';
-// Mocking modules
-jest.mock('jsonwebtoken', () => ({
-    sign: jest.fn(),
-  }));
+import { sendConfirmationEmail } from '../Controllers/emailController.mjs';
 
-jest.mock('../Models/userModel.mjs');
-jest.mock('bcryptjs', () => ({
-    hash: jest.fn(() => Promise.resolve('hashedPassword')),
-    compare: jest.fn(),
-}));
-jest.mock('../Models/userModel.mjs', () => {
-    return {
-      __esModule: true, // this property makes it work with ES module import
-      default: jest.fn().mockImplementation(() => {
-        return {
-          getAllUsers: jest.fn(),
-          getUserByUsername: jest.fn(),
-          addUser: jest.fn(),
-          // ... other methods you want to mock
-        };
-      }),
-    };
+
+
+describe('userController', () => {
+
+
+  beforeEach(() => {
+    jest.resetModules(); // This resets the module registry - the cache of all required modules
+    jest.clearAllMocks(); // This clears all mocks so that previous test runs don't interfere
   });
-dotenv.config();
-const JWT_SECRET = process.env.JWT_SECRET;
-const EXPIRES_IN = process.env.EXPIRES_IN;
-describe('User Controller Tests', () => {
-    let res;
-    let mockUserModelInstance;
-  
-    beforeEach(() => {
-        res = {
-            json: jest.fn(),
-            status: jest.fn(() => res),
-        };
-        jest.clearAllMocks();
-      
-        userModel.mockClear();
-        jwt.sign.mockClear();
-        bcrypt.hash.mockClear();
-        bcrypt.compare.mockClear();
-     
-        mockUserModelInstance = {
-            getAllUsers: jest.fn(),
+
+
+  // getAllUsersController returns all users
+  it('should return all users when getAllUsersController is invoked', async () => {
+
+    jest.mock('../Models/userModel.mjs', () => {
+      return {
+        __esModule: true,
+        default: jest.fn().mockImplementation(() => {
+          return {
+            getAllUsers: jest.fn().mockResolvedValue([{ id: 1, username: 'john' }, { id: 2, username: 'jane' }]),
             getUserByUsername: jest.fn(),
             addUser: jest.fn(),
-            // ... other methods as needed
-        };
-      
-        // Here you set the actual implementation of the mocked userModel
-        userModel.mockImplementation(() => mockUserModelInstance);
+            // ... any other methods that need to be mocked
+          };
+        })
+      };
     });
+    
+
+    const userController = require('../Controllers/userControl.mjs').default;
+
+    // Create mock request and response objects
+    const req = {};
+    const res = {
+      json: jest.fn(),
+      status: jest.fn().mockReturnThis()
+    };
+  
+    // Invoke the getAllUsersController method
+    await userController.getAllUsersController(req, res);
+  
+    // Expect the response to contain all users
+    expect(res.json).toHaveBeenCalledWith([{ id: 1, username: 'john' }, { id: 2, username: 'jane' }]);
+  });
+
+
+
   
 
-    it('should return all users when getAllUsersController is called', async () => {
-        const mockUsers = [{ username: 'testuser1' }, { username: 'testuser2' }];
-        const mockUserModelInstance = { getAllUsers: jest.fn().mockResolvedValue(mockUsers) };
-        userModel.mockImplementation(() => mockUserModelInstance);
-    
-        await userController.getAllUsersController(null, res);
-    
-        expect(mockUserModelInstance.getAllUsers).toHaveBeenCalled();
-        expect(res.json).toHaveBeenCalledWith(mockUsers);
-    });
+
   
-    /*it('should add a user and return their id when addUserController is called', async () => {
-        const req = {
-          body: {
-            username: 'Filiper',
-            email: 'ntestingr@google.com',
-            password: 'Password1234',
-            permission_level: 'user',
-          },
-        };
-        const mockUserId = 1;
-        const mockHashedPassword = 'hashedPassword';
-        console.log(mockUserModelInstance.addUser.mock.calls);
-        mockUserModelInstance.getUserByUsername.mockResolvedValue(null);
-        mockUserModelInstance.addUser.mockResolvedValue(mockUserId);
-        bcrypt.hash.mockResolvedValue(mockHashedPassword);
-        console.log(req);
-        await userController.addUserController(req, res);
-    
-        expect(mockUserModelInstance.getUserByUsername).toHaveBeenCalledWith(req.body.username);
-        expect(mockUserModelInstance.addUser).toHaveBeenCalledWith(
-          req.body.username,
-          req.body.email,
-          expect.any(String),
-          req.body.permission_level
-        );
-        expect(res.status).toHaveBeenCalledWith(201);
-        expect(res.json).toHaveBeenCalledWith({ userId: mockUserId });
-      });*/
+
+  // addUserController returns an error if the username is already taken
+  it('should return an error if the username is already taken', async () => {
+    // Mock userModel and its getUserByUsername method
+    const userModelMock = jest.fn().mockImplementation(() => ({
+      getUserByUsername: jest.fn().mockResolvedValue({username: 'john'})
+    }));
+    jest.doMock('../Models/userModel.mjs', () => userModelMock);
+    jest.resetModules();
+    const userController = require('../Controllers/userControl.mjs').default;
+    const req = {
+      body: {
+        username: 'john',
+        email: 'john@example.com',
+        password: 'password123',
+        permission_level: 'user'
+      }
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+    await userController.addUserController(req, res);
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Username already exists.' });
+  });
+
 });
-  

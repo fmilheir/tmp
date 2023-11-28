@@ -57,6 +57,28 @@ class PointsOfInterestModel {
           throw error;
         }
       }
+
+      // Get a point of interest by Region
+      async getPointOfInterestByRegion(pointOfInterestRegiom) {
+        try {
+          const query = 'SELECT * FROM point_of_interest WHERE region = ?';
+          const [rows] = await pool.query(query, [pointOfInterestRegiom]);
+          return rows;
+        } catch (error) {
+          throw error;
+        }
+      }
+
+      // Add a recomendation to a specific poi
+      async addRecomendationToPoi(poiID) {
+        try {
+          const query = `UPDATE point_of_interest SET recommendations=recommendations+1 WHERE id=?`;
+          const [rows] = await pool.query(query, [poiID]);
+          return rows;
+        } catch (error) {
+          throw error;
+        }
+      }
   }
   
   export default PointsOfInterestModel;

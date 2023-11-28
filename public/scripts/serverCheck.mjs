@@ -14,7 +14,12 @@ async function startConnection() {
         username VARCHAR(255) NOT NULL UNIQUE,
         email VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
-        permission_level ENUM('admin', 'user', 'guest') NOT NULL
+        permission_level ENUM('admin', 'user', 'guest') NOT NULL,
+        resetPasswordToken VARCHAR(255) DEFAULT NULL,
+        resetPasswordExpires DATETIME DEFAULT NULL,
+        verificationCode VARCHAR(6) DEFAULT NULL,
+        verificationExpires DATETIME DEFAULT NULL,
+        isVerified BOOLEAN DEFAULT FALSE
       )
     `);
     console.log('Checked "users" table.');
@@ -34,6 +39,17 @@ async function startConnection() {
       )
     `);
     console.log('Checked "point_of_interest" table.');
+
+    // Create "Sessions" table if it does not exist
+    await connection.query(`
+    CREATE TABLE IF NOT EXISTS sessions (
+      session_id VARCHAR(128) NOT NULL,
+      expires BIGINT,
+      data TEXT,
+      PRIMARY KEY (session_id)
+    )
+    `);
+    console.log('Checked "sessions" table.');
 
     connection.release(); // Release the connection back to the pool
 

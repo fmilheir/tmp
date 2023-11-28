@@ -32,7 +32,9 @@ function EmailVerification() {
   
       return (
           <div id="itme-container">
-              <input type="text" id="email" placeholder="Email address" />
+              <input  type="text"
+                    className="form-control form-control-user"
+                    placeholder="Enter Email Address "/>
               <button onClick={verifyEmail} id="verify-button">Verify</button>
           </div>
        );
