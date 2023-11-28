@@ -16,7 +16,6 @@ function Region({ title }) {
     /// map (8)
 
     const map = L.map("map2");
-    markerGroup = L.layerGroup().addTo(map);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
         "Map data copyright OpenStreetMap contributors, Open Database Licence",
@@ -53,7 +52,7 @@ function Region({ title }) {
                 <input type="text" id="country" name="country" placeholder="What country?" ><br>
                 <input type="text" id="region" name="region" placeholder="Input the region of the Place" ><br>
                 <textarea id="description" name="description" placeholder="Describe the place" ></textarea><br>
-                <input type="image" id="image" name="filename">
+                <input type="file" id="image" name="filename">
                 <button id="submit" type="submit">Submit</button>
                 
             </form> `;
