@@ -136,19 +136,12 @@ function Region({ title }) {
               //return response.json();
             });
           }
-
-
           /////////// picture upload code
           const sendFiles = async () => {
             console.log("sendingfiles")
             ////////////////////////// (picture upload)
-            let filename = "picture";
 
             const fileInput = document.getElementById("imageInput");
-
-            const formData = new FormData();
-            let extension = "";
-
             //new way with base 64
             fileInput.addEventListener("change", function () {
               const file = fileInput.files[0];
@@ -162,68 +155,6 @@ function Region({ title }) {
              
               reader.readAsDataURL(file); // Convert the image to Base64
             });
-
-            /*- Old way to uipload image
-            Object.keys(myfiles, filename).forEach((key) => {
-              //formData.append(myfiles.item(key).name,myfiles.item(key))
-              let file = myfiles.item(key);
-              extension = file.name.split(".").pop();
-              //formData.append(file.name, file, `${poiId}.jpeg`); // working
-              formData.append(
-                file.name,
-                file,
-                `${poiId}.${file.name.split(".").pop()}`
-              ); // working
-
-              //formData.append(filename, myfiles.item(key)); // initial
-            });
-
-            const response = await fetch(
-              "http://localhost:3000/photos/upload",
-              {
-                method: "POST",
-                body: formData,
-              }
-            );
-            if (response.status == 500) {
-              // check if response is not okay
-              alert("Upload failed. Please try again.");
-              return;
-            } else if (response.status == 400) {
-              alert("Please upload a file or press Skipp");
-              return;
-            } else if (response.status == 422) {
-              alert("Wrong file format");
-              return;
-            } else {
-              alert("Upload successful.");
-              marker
-                .bindPopup(
-                  `<h3>${name}</h3> 
-                            <img src="/photos/${poiId}.${extension}" alt="There is no picture" width="200" height="300">
-                            <p> ${description}</p>`
-                )
-                .openPopup();
-              ////////////////////////////////////
-              // Changing the extension back to jpeg to facilitate img search in search!!!!!!!!!!!!!
-              const oldFilename = `${poiId}.${extension}`;
-              const newFilename = `${poiId}.jpeg`;
-              const fileUrl = `/photos/${oldFilename}`;
-              const newFileUrl = `/photos/upload`;
-              const file = await fetch(fileUrl).then((res) =>
-                res.blob()
-              );
-
-              const formData = new FormData();
-              formData.append("file", file, newFilename);
-              const options = {
-                method: "POST",
-                body: formData,
-              };
-              fetch(newFileUrl, options);
-              ///////////////////////////////////////////
-              const json = await response.json();
-            }-*/
           };
           
         }
