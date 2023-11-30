@@ -3,29 +3,69 @@ name: NodeJS Github Action
 on:
   push:
     branches:
-      - '**'
+      - main
   pull_request:
     branches:
-      - '**'
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3 # Checkout the repository
-
       - name: Use Node
         uses: actions/setup-node@v1
         with:
           node-version: 16
-
       - name: npm install and build
         run: |
           npm install
-          npm run build --if-present
-
+          npm run build --if-present  
       - name: Adjust permissions for jest
         run: chmod +x ./node_modules/.bin/jest
 
       - name: npm test
         run: npm test
+
+  publish_to_docker:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/devops_com619-devops:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/devops_com619-devops:latest
+          
+  deploy:
+    needs: publish_to_docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup SSH Connection
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          if [ $? -ne 0 ]; then echo "Writing key failed"; exit 1; fi
+          chmod 600 ~/.ssh/id_rsa
+          if [ $? -ne 0 ]; then echo "Chmod failed"; exit 1; fi
+          ssh-keyscan -H com619trial.uksouth.cloudapp.azure.com >> ~/.ssh/known_hosts
+          if [ $? -ne 0 ]; then echo "Ssh-keyscan failed"; exit 1; fi
+
+      - name: Check SSH Key Line Count
+        run: wc -l ~/.ssh/id_rsa
+
+      - name: Check SSH Key Character Count
+        run: wc -m ~/.ssh/id_rsa
+        
+      - name: Deploy to Azure VM
+        run: |
+          ssh -o StrictHostKeyChecking=no com619@com619trial.uksouth.cloudapp.azure.com 'bash -s' < deploy_script.sh

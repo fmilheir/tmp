@@ -14,7 +14,12 @@ async function startConnection() {
         username VARCHAR(255) NOT NULL UNIQUE,
         email VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
-        permission_level ENUM('admin', 'user', 'guest') NOT NULL
+        permission_level ENUM('admin', 'user', 'guest') NOT NULL,
+        resetPasswordToken VARCHAR(255) DEFAULT NULL,
+        resetPasswordExpires DATETIME DEFAULT NULL,
+        verificationCode VARCHAR(6) DEFAULT NULL,
+        verificationExpires DATETIME DEFAULT NULL,
+        isVerified BOOLEAN DEFAULT FALSE
       )
     `);
     console.log('Checked "users" table.');
@@ -30,7 +35,8 @@ async function startConnection() {
         lon DECIMAL(10, 6),
         lat DECIMAL(10, 6),
         description TEXT,
-        recommendations TEXT
+        recommendations TEXT,
+        image BLOB
       )
     `);
     console.log('Checked "point_of_interest" table.');

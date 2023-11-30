@@ -25,23 +25,6 @@
 ## Technology overview:
 
 * To enhance modularity, the project leverages ES6 JavaScript runtimes, resulting in the use of '.mjs' file extensions.
-* The server-side infrastructure is implemented using pure Node.js with the Express framework
-* The client-side, React was utilized with the Babel compiler for efficient development and enhanced JavaScript capabilities.
-
-## .env file / GitHub secrets 
-
-* During development, sensitive information such as database connections and credentials is stored in environment (env) files for security reasons.
-* The .env file is consistently excluded from version control repositories to prevent sensitive information from being exposed.
-* For hosting, GitHub Secrets are employed to securely store sensitive data, which is then referenced within the code for secure runtime access.
-
-
-## MVC
-
-* It is used to separate the concerns of an application into three interconnected components, each with its own responsibilities.
-* The Routes were separated, it serve to map URLs to specific controller actions, determining how incoming HTTP requests are processed.
-* They enable clean URLs and centralize the configuration of URL pattern.
-* Model classes oversee data management and database interactions, ensuring data integrity and consistency.
-* Controller classes handle incoming HTTP requests, mediating interactions with models, and format data into JSON for client communication, fostering a structured and efficient application architecture.
 
 ## Containerizing the entire project using Docker:
 
@@ -71,4 +54,25 @@ excluding node modules, we enhance deployment efficiency and accelerate build ti
 ```
 and encompasses all the essential environment variables necessary for establishing a connection.
 * Additionally, a volume has been mounted to the database container to ensure data persistence beyond the container's lifecycle.
+
+## User
+
+### Front-end User
+
+* Renato write everything you have done with the user on the front end! 
+
+### Back-end User
+
+* Olah needs to write what you have done so far in the back end
+
+
+## Point of Interest 
+
+### Cleint side Interest
+
+* Renato do it 
+
+### Server side Point of Interest
+
+* Boyszy
 

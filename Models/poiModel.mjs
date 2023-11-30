@@ -12,14 +12,14 @@ class PointsOfInterestModel {
     }
   
     // Add a new point of interest
-    async addPointOfInterest({ name, type, country, region, lon, lat, description, recommendations }) {
+    async addPointOfInterest({ name, type, country, region, lon, lat, description, recommendations, image }) {
       try {
         const query = `
-          INSERT INTO point_of_interest (name, type, country, region, lon, lat, description, recommendations)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO point_of_interest (name, type, country, region, lon, lat, description, recommendations, image)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) 
         `;
   
-        const [result] = await pool.query(query, [name, type, country, region, lon, lat, description, recommendations]);
+        const [result] = await pool.query(query, [name, type, country, region, lon, lat, description, recommendations, image]);
         return result.insertId;
       } catch (error) {
         throw error;
@@ -53,6 +53,28 @@ class PointsOfInterestModel {
           const query = 'SELECT * FROM point_of_interest WHERE id = ?';
           const [rows] = await pool.query(query, [pointOfInterestId]);
           return rows[0];
+        } catch (error) {
+          throw error;
+        }
+      }
+
+      // Get a point of interest by Region
+      async getPointOfInterestByRegion(pointOfInterestRegiom) {
+        try {
+          const query = 'SELECT * FROM point_of_interest WHERE region = ?';
+          const [rows] = await pool.query(query, [pointOfInterestRegiom]);
+          return rows;
+        } catch (error) {
+          throw error;
+        }
+      }
+
+      // Add a recomendation to a specific poi
+      async addRecomendationToPoi(poiID) {
+        try {
+          const query = `UPDATE point_of_interest SET recommendations=recommendations+1 WHERE id=?`;
+          const [rows] = await pool.query(query, [poiID]);
+          return rows;
         } catch (error) {
           throw error;
         }
