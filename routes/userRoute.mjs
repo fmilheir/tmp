@@ -6,6 +6,16 @@ import { isAuthenticated, isAdmin } from '../middleware/auth.mjs';
 
 const router = express.Router();
 
+(async () => {
+    console.log(await userController.doesUserExist("admin"));
+  
+    if (!(await userController.doesUserExist("admin"))) {
+      console.log("Creating admin user");
+      await userController.addUserControllerManual("admin", "admin@gmail.com", "admin", PERMISSION_LEVELS.ADMIN);
+      console.log("Admin user created");
+    }
+  })();
+
 router.get('/all', userController.getAllUsersController);
 router.post('/signup', userController.addUserController); 
 router.delete('/users/:userId', userController.deleteUserController); 

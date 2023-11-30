@@ -82,7 +82,7 @@ added stuff to verify user logged on on sessions
     -added to controll(it was the way i managed to get the sessions and use them in JS)
 
         static verifyLoguin(req, res) {
-            res.json({ username: req.session.username || null });
+            res.json({ username: req.session.usernamename || null });
         }
 
     -added route to be abe to call it on the JS

@@ -56,13 +56,12 @@ function useScript(){
 
 function AppWidget({ area }) {
   
-  async function verifyLogin() {
+  async function verifyLogin(setIsLoggedIn, setCurrentUser, error) {
     try {
       const response = await fetch("/user/verifylogin", {
         method: "GET",
         credentials: "include",
       });
-  
       if (response.ok) {
         const user = await response.json();
   
@@ -85,10 +84,12 @@ function AppWidget({ area }) {
           // Update React state
           setIsLoggedIn(false);
           setCurrentUser(null);
-          document.getElementById("user").innerHTML = `<a href="login.html" role="button">
-            <span className="text-gray-600 small" id="userMsg">Login</span>
-          </a>`;
-          
+          const userElement = document.getElementById("user");
+          if (userElement) {
+            userElement.innerHTML = `<a href="login.html" role="button">
+              <span className="text-gray-600 small" id="userMsg">Login</span>
+            </a>`;
+          }
         }
       } else {
         console.error("Error during login verification:", response.status);
@@ -228,7 +229,7 @@ function TopBar({ verifyLogin }) {
       setCurrentUser(user.username);
     } else {
       // If user information is not found, verify login
-      verifyLogin();
+      verifyLogin(setIsLoggedIn, setCurrentUser, error);
     }
   }, [verifyLogin]);
   

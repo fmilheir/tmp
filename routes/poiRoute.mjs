@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import PointsOfInterestController from '../Controllers/poiControl.mjs';
-
+import { isAuthenticated, isAdmin } from '../middleware/auth.mjs';
 
 router.get('/pointsOfInterest', PointsOfInterestController.getAllPointsOfInterestController);
 

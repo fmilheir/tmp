@@ -15,15 +15,6 @@ const __dirname = path.resolve();
 
 const app = express();
 
-
-app.use(cors({ credentials: true }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use('/user', UserRoute);
-app.use('/poi', Poirouter);
-app.use("/public", express.static('./public/'));
-
-// Set up the session store
 const sessionStore = new (MySQLStore(session))({
     clearExpired: true,
     expiration: 86400000,
@@ -47,6 +38,18 @@ app.use(session({
     credentials: true, // Allows credentials (cookies) to be sent with cross-origin requests
 }));
 
+
+app.use(cors({ credentials: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/user', UserRoute);
+app.use('/poi', Poirouter);
+app.use("/public", express.static('./public/'));
+
+// Set up the session store
+
+
+
 // Use JWT-related function from jwtUtils
 const token = jwtUtils.signToken({ username: 'guest' }, { expiresIn: '1h' });
 const decoded = jwtUtils.verifyToken(token);
@@ -56,10 +59,6 @@ const decrypted = jwtUtils.decryptToken(encryptedToken);
 app.get("/", (req, res) => {
     res.redirect( "/public/index.html");
 });
-
-/*app.get("/login", (req, res) => {
-    res.redirect( "/public/login.html"); 
-});*/
 
 app.get("/verify", (req, res) =>{
     res.redirect("/public/verify.html");
@@ -122,6 +121,17 @@ app.use((req, res, next) => {
     
 });
 
+app.get("/login", (req, res) => {
+    res.redirect( "/public/login.html"); 
+});
+
+app.get("/pois", (req, res) =>{
+    res.redirect("/public/pois.html");
+});
+
+app.get("/users", (req, res) =>{
+    res.redirect("/public/users.html");
+});
 // Handling the 404 error
 app.use((req, res, next) => {
     res.status(404).send("Sorry I can't find that");
