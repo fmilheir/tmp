@@ -55,8 +55,14 @@ function useScript(){
 }
 
 function AppWidget({ area }) {
-  
-  async function verifyLogin(setIsLoggedIn, setCurrentUser, error) {
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [currentUser, setCurrentUser] = React.useState(null);
+
+  React.useEffect(() => {
+    verifyLogin();
+  }, [isLoggedIn, currentUser]);
+
+  async function verifyLogin() {
     try {
       const response = await fetch("/user/verifylogin", {
         method: "GET",
@@ -64,40 +70,26 @@ function AppWidget({ area }) {
       });
       if (response.ok) {
         const user = await response.json();
-  
-        if (user && user.username) {
-          // Save user information to localStorage
-          localStorage.setItem("loggedInUser", JSON.stringify(user));
-
-          // Update React state
-          setIsLoggedIn(true);
-          setCurrentUser(user.username);
-  
-          // Update UI with username
-          document.getElementById("user").innerHTML = `<a role="button" id="logoutBtn">
-            <span className="text-gray-600 small" id="userMsg">Welcome ${user.username} / Logoff</span>
-          </a>`;
-          document.getElementById("logoutBtn").addEventListener("click", logoutUser);
-          // Force react to re-render
-          //window.forceUpdate();
-        } else {
-          // Update React state
-          setIsLoggedIn(false);
-          setCurrentUser(null);
-          const userElement = document.getElementById("user");
-          if (userElement) {
-            userElement.innerHTML = `<a href="login.html" role="button">
-              <span className="text-gray-600 small" id="userMsg">Login</span>
-            </a>`;
-          }
-        }
+        setIsLoggedIn(true);
+        setCurrentUser(user.username);
+        window.location.reload();
+        
       } else {
+        setIsLoggedIn(false);
+        setCurrentUser(null);
         console.error("Error during login verification:", response.status);
       }
     } catch (error) {
       console.error("Error during login:", error);
       alert(`Login error: ${error.message}`);
     }
+  }
+  if (area === "sidebar") {
+    return < SideBar isLoggedIn={isLoggedIn}/>;
+  } else if (area === "topbar") {
+    return <TopBar verifyLogin={verifyLogin} isLoggedIn={isLoggedIn} currentUser={currentUser} logoutUser={logoutUser} />;
+  } else {
+    return <Footer />;
   }
   
 
@@ -117,26 +109,8 @@ function AppWidget({ area }) {
       alert(`Undifined error: ${response}`);
     }
   }
+  
 
-  if (area == "sidebar") {
-    return (
-      <div>
-        <SideBar />
-      </div>
-    );
-  } else if (area == "topbar") {
-    return (
-      <div>
-        <TopBar verifyLogin={verifyLogin} />
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <Footer />
-      </div>
-    );
-  }
 }
 
 function handleLogin(username, password) {
@@ -159,18 +133,23 @@ function handleLogin(username, password) {
       }
       // Update local storage 
       localStorage.setItem('loggedInUser', JSON.stringify(data));
-      // Redirect the user
-      window.location.href = localStorage.getItem('redirectUrl') || '/';
-      localStorage.removeItem('redirectUrl')
+      // Update state
+      setIsLoggedIn(true);
+      setCurrentUser(data.user.username); 
+      window.location.reload();
   })
   .catch((error) => {
       console.error('Error during login:', error);
       alert(`Login error: ${error.message}`);
   });
+  
 }
 
-function SideBar() {
-  return (
+function SideBar({ isLoggedIn }) {
+  if (!isLoggedIn){
+    return null; // Or return a login prompt or empty fragment
+  }
+  return isLoggedIn ? (
     <ul className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <a className="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
@@ -208,49 +187,36 @@ function SideBar() {
         <button className="rounded-circle border-0" id="sidebarToggle"></button>
       </div>
   </ul>
-  );
+  ): null;
 }
 
-function TopBar({ verifyLogin }) {
+function TopBar({ isLoggedIn, currentUser, logoutUser }) {
   const [username, setUsername] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [error, setError] = React.useState("");
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [currentUser, setCurrentUser] = React.useState(null);
+  //const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  //const [currentUser, setCurrentUser] = React.useState(null);
 
   React.useEffect(() => {
     const storedUser = localStorage.getItem("loggedInUser");
   
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      setIsLoggedIn(true);
-      setCurrentUser(user.username);
+      //setIsLoggedIn(true);
+      //setCurrentUser(user.username);
     } else {
       // If user information is not found, verify login
       verifyLogin(setIsLoggedIn, setCurrentUser, error);
     }
   }, [verifyLogin]);
   
-
-  /*React.useEffect(() => {
-    // Call verifyLogin on component mount
-    verifyLogin().then(user => {
-      if (user && user.username) {
-        setIsLoggedIn(true);
-        setCurrentUser(user.username);
-      }
-    })
-  }, [verifyLogin]);*/
   
   const handleFormSubmit = (event) => {
     event.preventDefault();
     const username = document.getElementById("logUsername").value;
     const password = document.getElementById("logPassword").value;
-
-    // STore the current URL redirecting to the login
-    localStorage.setItem('redirectUrl', window.location.href);
 
     handleLogin(username, password);
   };
@@ -313,7 +279,7 @@ function TopBar({ verifyLogin }) {
         }
       })
       .catch((error) => {
-        setError(error.message);
+        setError(error.messawige);
       });
   };
 
@@ -348,121 +314,81 @@ function TopBar({ verifyLogin }) {
 
       <ul className="navbar-nav ml-auto">
       {isLoggedIn ? (
-        // If the user is logged in, display user inforation and logout button
-          <div>
-            <li className="nav-item dropdown no-arrow mx-1">
-              <a
-                className="nav-link dropdown-toggle text-black-50"
-                href="#"
-                id="userDropdown"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-                  Welcome, {currentUser}
-                </span>
-                <img className="img-profile rounded-circle"></img>
-              </a>
-
-              <div
-                className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                aria-labelledby="userDropdown"
-              >
-                <a className="dropdown-item" href="profile.html">
-                  <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Profile
-                </a>
-                <div className="dropdown-divider"></div>
-                <a className="dropdown-item" onClick={logoutUser}>
-                  <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Logout
-                </a>
-              </div>
-            </li>
-          </div>
-        ) : (
-          // If the user is not logged in, display login and signup buttons 
-          <div>
-            <li className="nav-item dropdown no-arrow mx-1">
-              <a
-                className="nav-link dropdown-toggle text-black-50"
-                href="#"
-                id="alertsDropdown"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                Log in
-              </a>
-
-              <div
-                className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                aria-labelledby="alertsDropdown"
-                >
-                <h6 className="dropdown-header">
-                  Please enter your details below
-                </h6>
-                <a className="dropdown-item d-flex align-items-center" href="#">
-                  <form
-                    onSubmit={handleFormSubmit}
-                    className="user"
-                    style={{ width: `100%` }}
-                  >
-                    <div className="form-group">
-                      <input
-                        type="text"
-                        placeholder="Enter Username"
-                        id="logUsername"
-                        className="form-control form-control-user"
-                      />
-                      <input
-                        type="password"
-                        placeholder="Enter Password"
-                        id="logPassword"
-                        className="form-control form-control-user"
-                      />
-                      <button
-                        type="submit"
-                        className="btn btn-primary btn-user btn-block"
-                      >
-                        Log in
-                      </button>
-                    </div>
-                  </form>
-                </a>
-                
-              </div>
-            </li>
-          </div>
-        )}
         
-          <div
-            className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-            aria-labelledby="alertsDropdown"
-          >
-            <h6 className="dropdown-header">
-              Please enter your details bellow
-            </h6>
-            <a className="dropdown-item d-flex align-items-center" href="#">
-              <form
-                onSubmit={handleFormSubmit}
-                className="user"
-                style={{ width: `100%` }}
+        // If the user is logged in, display user inforation and logout button
+        <div>
+          <li className="nav-item dropdown no-arrow mx-1">
+            <a
+              className="nav-link dropdown-toggle text-black-50"
+              href="#"
+              id="userDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+            <span className="mr-2 d-none d-lg-inline text-gray-600 small">
+              Welcome, {currentUser}
+              </span>
+              <img className="img-profile rounded-circle"></img>
+            </a>
+
+            <div
+              className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+              aria-labelledby="userDropdown"
+            >
+              <a className="dropdown-item" href="profile.html">
+                <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                Profile
+              </a>
+              <div className="dropdown-divider"></div>
+              <a className="dropdown-item" onClick={logoutUser}>
+                <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                Logout
+              </a>
+            </div>
+          </li>
+        </div>
+      ) : (
+        // If the user is not logged in, display login and signup buttons 
+        <div>
+          <li className="nav-item dropdown no-arrow mx-1">
+            <a
+              className="nav-link dropdown-toggle text-black-50"
+              href="#"
+              id="alertsDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Log in
+            </a>
+
+            <div
+              className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+              aria-labelledby="alertsDropdown"
               >
+              <h6 className="dropdown-header">
+                Please enter your details below
+              </h6>
+              <a className="dropdown-item d-flex align-items-center" href="#">
+                <form
+                  onSubmit={handleFormSubmit}
+                  className="user"
+                  style={{ width: `100%` }}
+                >
                 <div className="form-group">
                   <input
-                    type="text"
-                    placeholder="Enter Username"
-                    id="logUsername1"
-                    className="form-control form-control-user"
+                      type="text"
+                      placeholder="Enter Username"
+                      id="logUsername"
+                      className="form-control form-control-user"
                   />
                   <input
                     type="password"
                     placeholder="Enter Password"
-                    id="logPassword1"
+                    id="logPassword"
                     className="form-control form-control-user"
                   />
                   <button
@@ -473,17 +399,10 @@ function TopBar({ verifyLogin }) {
                   </button>
                 </div>
               </form>
-            </a>
-            <a
-              className="dropdown-item text-center small text-gray-500"
-              href="/verify"
-            >
-              Reset Password
-            </a>
+            </a>     
           </div>
-        
-
-        <li className="nav-item dropdown no-arrow mx-1">
+        </li>
+            <li className="nav-item dropdown no-arrow mx-1">
           <a
             className="nav-link dropdown-toggle text-black-50"
             href="#"
@@ -557,49 +476,16 @@ function TopBar({ verifyLogin }) {
           </div>
         </li>
 
-        <div className="topbar-divider d-none d-sm-block"></div>
-
-        {isLoggedIn && (
-          <li className="nav-item dropdown no-arrow">
-            <a
-              className="nav-link dropdown-toggle"
-              href="#"
-              id="userDropdown"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-        
-              Welcome, {currentUser}
-            </span>
-            <img className="img-profile rounded-circle"></img>
-          </a>
-
-          <div
-            className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-            aria-labelledby="userDropdown"
-          >
-            <a className="dropdown-item" href="profile.html">
-              <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-              Profile
-            </a>
-            <div className="dropdown-divider"></div>
-            <a
-              className="dropdown-item"
-              onClick={logoutUser}
-            >
-              <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-              Logout
-            </a>
           </div>
-        </li>
+
+          
         )}
+        <div className="topbar-divider d-none d-sm-block"></div>
       </ul>
     </nav>
   );
 }
+
 
 
 
@@ -626,6 +512,6 @@ const topbar = ReactDOM.createRoot(document.getElementById("topbar"));
 const footer = ReactDOM.createRoot(document.getElementById("footer"));
 
 sidebar.render(<AppWidget area="sidebar" />);
-topbar.render(<AppWidget area="topbar" />);
+topbar.render(<AppWidget area="topbar" isLoggedIn={isLoggedIn} currentUser={currentUser} logoutUser={logoutUser} />);
 footer.render(<AppWidget area="footer" />);
 
