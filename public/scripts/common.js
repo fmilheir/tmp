@@ -1,223 +1,312 @@
-function useScript(){
-  React.useEffect(()=>{
+function useScript() {
+  React.useEffect(() => {
     // Toggle the side navigation
-  $("#sidebarToggle, #sidebarToggleTop").on('click', function(e) {
-    $("body").toggleClass("sidebar-toggled");
-    $(".sidebar").toggleClass("toggled");
-    if ($(".sidebar").hasClass("toggled")) {
-      $('.sidebar .collapse').collapse('hide');
-    };
-  });
+    $("#sidebarToggle, #sidebarToggleTop").on("click", function (e) {
+      $("body").toggleClass("sidebar-toggled");
+      $(".sidebar").toggleClass("toggled");
+      if ($(".sidebar").hasClass("toggled")) {
+        $(".sidebar .collapse").collapse("hide");
+      }
+    });
 
-  // Close any open menu accordions when window is resized below 768px
-  $(window).resize(function() {
-    if ($(window).width() < 768) {
-      $('.sidebar .collapse').collapse('hide');
-    };
-    
-    // Toggle the side navigation when window is resized below 480px
-    if ($(window).width() < 480 && !$(".sidebar").hasClass("toggled")) {
-      $("body").addClass("sidebar-toggled");
-      $(".sidebar").addClass("toggled");
-      $('.sidebar .collapse').collapse('hide');
-    };
-  });
+    // Close any open menu accordions when window is resized below 768px
+    $(window).resize(function () {
+      if ($(window).width() < 768) {
+        $(".sidebar .collapse").collapse("hide");
+      }
 
-  // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
-  $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function(e) {
-    if ($(window).width() > 768) {
-      var e0 = e.originalEvent,
-        delta = e0.wheelDelta || -e0.detail;
-      this.scrollTop += (delta < 0 ? 1 : -1) * 30;
+      // Toggle the side navigation when window is resized below 480px
+      if ($(window).width() < 480 && !$(".sidebar").hasClass("toggled")) {
+        $("body").addClass("sidebar-toggled");
+        $(".sidebar").addClass("toggled");
+        $(".sidebar .collapse").collapse("hide");
+      }
+    });
+
+    // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
+    $("body.fixed-nav .sidebar").on(
+      "mousewheel DOMMouseScroll wheel",
+      function (e) {
+        if ($(window).width() > 768) {
+          var e0 = e.originalEvent,
+            delta = e0.wheelDelta || -e0.detail;
+          this.scrollTop += (delta < 0 ? 1 : -1) * 30;
+          e.preventDefault();
+        }
+      }
+    );
+
+    // Scroll to top button appear
+    $(document).on("scroll", function () {
+      var scrollDistance = $(this).scrollTop();
+      if (scrollDistance > 100) {
+        $(".scroll-to-top").fadeIn();
+      } else {
+        $(".scroll-to-top").fadeOut();
+      }
+    });
+
+    // Smooth scrolling using jQuery easing
+    $(document).on("click", "a.scroll-to-top", function (e) {
+      var $anchor = $(this);
+      $("html, body")
+        .stop()
+        .animate(
+          {
+            scrollTop: $($anchor.attr("href")).offset().top,
+          },
+          1000,
+          "easeInOutExpo"
+        );
       e.preventDefault();
-    }
-  });
-
-  // Scroll to top button appear
-  $(document).on('scroll', function() {
-    var scrollDistance = $(this).scrollTop();
-    if (scrollDistance > 100) {
-      $('.scroll-to-top').fadeIn();
-    } else {
-      $('.scroll-to-top').fadeOut();
-    }
-  });
-
-  // Smooth scrolling using jQuery easing
-  $(document).on('click', 'a.scroll-to-top', function(e) {
-    var $anchor = $(this);
-    $('html, body').stop().animate({
-      scrollTop: ($($anchor.attr('href')).offset().top)
-    }, 1000, 'easeInOutExpo');
-    e.preventDefault();
-  });
-  },[]);
+    });
+  }, []);
 }
 
 function AppWidget({ area }) {
+  const [loggedInUser, setLoggedInUser] = React.useState("");
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [currentUser, setCurrentUser] = React.useState(null);
 
-  React.useEffect(() => {
-    verifyLogin();
-  }, [isLoggedIn, currentUser]);
-
-  async function verifyLogin() {
-    try {
-      const response = await fetch("/user/verifylogin", {
-        method: "GET",
-        credentials: "include",
-      });
-      if (response.ok) {
-        const user = await response.json();
-        setIsLoggedIn(true);
-        setCurrentUser(user.username);
-        window.location.reload();
-        
-      } else {
-        setIsLoggedIn(false);
-        setCurrentUser(null);
-        console.error("Error during login verification:", response.status);
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-      alert(`Login error: ${error.message}`);
-    }
-  }
-  if (area === "sidebar") {
-    return < SideBar isLoggedIn={isLoggedIn}/>;
-  } else if (area === "topbar") {
-    return <TopBar verifyLogin={verifyLogin} isLoggedIn={isLoggedIn} currentUser={currentUser} logoutUser={logoutUser} />;
-  } else {
-    return <Footer />;
-  }
   
-
-  async function logoutUser() {
-    const response = await fetch(`/user/logout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (response.status == 400) {
-      alert("ERROR!! Unable to logout please try again");
-    } else if (response.status == 200) {
-      alert("Logged out!");
-      window.location.reload();
-    } else {
-      alert(`Undifined error: ${response}`);
-    }
-  }
-  
-
-}
-
-function handleLogin(username, password) {
-  const loginDetails = { username, password };
-  fetch("/user/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(loginDetails),
-  })
-  .then(response => {
-    console.log(response);
-    return response.json();
-})
-  .then((data) => {
-    console.log("Login API response:", data);
-      if (data.error) {
-          throw new Error(data.error);
-      }
-      // Update local storage 
-      localStorage.setItem('loggedInUser', JSON.stringify(data));
-      // Update state
+  async function verifyLogin(event) {
+    const loggeduser = await fetch(`http://localhost:3000/user/verifylogin`);
+    const user = await loggeduser.json();
+    if(user.username){
+      //event.preventDefault();
+      setLoggedInUser(user.username);
       setIsLoggedIn(true);
-      setCurrentUser(data.user.username); 
-      window.location.reload();
-  })
-  .catch((error) => {
-      console.error('Error during login:', error);
-      alert(`Login error: ${error.message}`);
-  });
-  
+    }else{
+      //event.preventDefault();
+      setLoggedInUser("");
+      setIsLoggedIn(false);
+    }
+    
+  }
+
+  function handleLogin(username, password) {
+    const loginDetails = { username, password };
+    fetch('/user/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginDetails),
+    })
+    .then(response => {
+        console.log(response);
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        window.location.reload();
+    })
+    .catch((error) => {
+        console.error('Error during login:', error);
+        alert(`Login error: ${error.message}`);
+    });
 }
 
-function SideBar({ isLoggedIn }) {
-  if (!isLoggedIn){
-    return null; // Or return a login prompt or empty fragment
+async function logoutUser(setIsLoggedIn, setCurrentUser) {
+  try {
+    const response = await fetch('/user/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // if you're using session cookies
+    });
+ 
+    if (response.ok) {
+      // Logout successful
+      //setIsLoggedIn(false);
+      //setCurrentUser(null);
+      alert('You have been logged out.');
+      // Optionally redirect to login page or home page
+      window.location.reload();
+      //window.location.href = '/'; // change '/login' to your login route if it's different
+    } else {
+      throw new Error('Logout failed');
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+    alert('An error occurred during logout. Please try again.');
   }
-  return isLoggedIn ? (
-    <ul className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+}
 
-      <a className="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+  if (area == "sidebar") {
+    return (
+      <div>
+        <SideBar verifyLogin={verifyLogin} loggedInUser={loggedInUser} isLoggedIn={isLoggedIn}/>
+      </div>
+    );
+  } else if (area == "topbar") {
+    return (
+      <div>
+        <TopBar verifyLogin={verifyLogin} loggedInUser={loggedInUser} logoutUser={logoutUser} isLoggedIn={isLoggedIn} handleLogin={handleLogin}/>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <Footer />
+      </div>
+    );
+  }
+}
+
+function SideBar({verifyLogin, loggedInUser, isLoggedIn}) {
+  verifyLogin()
+  console.log(loggedInUser)
+  console.log(isLoggedIn)
+  if(isLoggedIn && loggedInUser =="admin"){ 
+    return (
+      <ul
+        className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+        id="accordionSidebar"
+      >
+        <a
+          className="sidebar-brand d-flex align-items-center justify-content-center"
+          href="index.html"
+        >
           <div className="sidebar-brand-icon rotate-n-15">
-              <i className="fas fa-laugh-wink"></i>
+            <i className="fas fa-laugh-wink"></i>
           </div>
           <div className="sidebar-brand-text mx-3">Dev Ops</div>
-      </a>
-
-      <hr className="sidebar-divider my-0"/>
-
-      <li className="nav-item active">
+        </a>
+  
+        <hr className="sidebar-divider my-0" />
+  
+        <li className="nav-item active">
           <a className="nav-link" href="/">
-              <i className="fas fa-fw fa-tachometer-alt"></i>
-              <span>Main Page</span></a>
-      </li>
-
-      <hr className="sidebar-divider"/>
-
-      <li className="nav-item">
-        <a className="nav-link" href="/public/pois.html">
+            <i className="fas fa-fw fa-tachometer-alt"></i>
+            <span>Main Page</span>
+          </a>
+        </li>
+  
+        <hr className="sidebar-divider" />
+  
+        <li className="nav-item">
+          <a className="nav-link" href="/public/pois.html">
             <i className="fas fa-fw fa-chart-area"></i>
-            <span>All Poi's</span></a>
-    </li>
-
-    <hr className="sidebar-divider"/>
-
-      <li className="nav-item">
-        <a className="nav-link" href="/public/users.html">
+            <span>All Poi's</span>
+          </a>
+        </li>
+  
+        <hr className="sidebar-divider" />
+  
+        <li className="nav-item">
+          <a className="nav-link" href="/public/users.html">
             <i className="fas fa-fw fa-chart-area"></i>
-            <span>Users</span></a>
-    </li>
-    <hr className="sidebar-divider"/>
-    <div className="text-center d-none d-md-inline" id="sidebarButtonToggleSideBar">
-        <button className="rounded-circle border-0" id="sidebarToggle"></button>
-      </div>
-  </ul>
-  ): null;
+            <span>Users</span>
+          </a>
+        </li>
+        <hr className="sidebar-divider" />
+        <div
+          className="text-center d-none d-md-inline"
+          id="sidebarButtonToggleSideBar"
+        >
+          <button className="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+      </ul>
+    );
+  }
+  else if(isLoggedIn){
+    return (
+      <ul
+        className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+        id="accordionSidebar"
+      >
+        <a
+          className="sidebar-brand d-flex align-items-center justify-content-center"
+          href="index.html"
+        >
+          <div className="sidebar-brand-icon rotate-n-15">
+            <i className="fas fa-laugh-wink"></i>
+          </div>
+          <div className="sidebar-brand-text mx-3">Dev Ops</div>
+        </a>
+  
+        <hr className="sidebar-divider my-0" />
+  
+        <li className="nav-item active">
+          <a className="nav-link" href="/">
+            <i className="fas fa-fw fa-tachometer-alt"></i>
+            <span>Main Page</span>
+          </a>
+        </li>
+  
+        <hr className="sidebar-divider" />
+  
+        <li className="nav-item">
+          <a className="nav-link" href="/public/pois.html">
+            <i className="fas fa-fw fa-chart-area"></i>
+            <span>All Poi's</span>
+          </a>
+        </li>
+  
+        <hr className="sidebar-divider" />
+        <div
+          className="text-center d-none d-md-inline"
+          id="sidebarButtonToggleSideBar"
+        >
+          <button className="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+      </ul>
+    );
+
+  }else{
+    return (
+      <ul
+        className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+        id="accordionSidebar"
+      >
+        <a
+          className="sidebar-brand d-flex align-items-center justify-content-center"
+          href="index.html"
+        >
+          <div className="sidebar-brand-icon rotate-n-15">
+            <i className="fas fa-laugh-wink"></i>
+          </div>
+          <div className="sidebar-brand-text mx-3">Dev Ops</div>
+        </a>
+  
+        <hr className="sidebar-divider my-0" />
+  
+        <li className="nav-item active">
+          <a className="nav-link" href="/">
+            <i className="fas fa-fw fa-tachometer-alt"></i>
+            <span>Main Page</span>
+          </a>
+        </li>
+  
+        <hr className="sidebar-divider" />
+        <div
+          className="text-center d-none d-md-inline"
+          id="sidebarButtonToggleSideBar"
+        >
+          <button className="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+      </ul>
+    );
+
+  }
+
+  
 }
 
-function TopBar({ isLoggedIn, currentUser, logoutUser }) {
+function TopBar({ verifyLogin, loggedInUser, logoutUser, isLoggedIn , handleLogin}) {
   const [username, setUsername] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [error, setError] = React.useState("");
-  //const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  //const [currentUser, setCurrentUser] = React.useState(null);
 
-  React.useEffect(() => {
-    const storedUser = localStorage.getItem("loggedInUser");
-  
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      //setIsLoggedIn(true);
-      //setCurrentUser(user.username);
-    } else {
-      // If user information is not found, verify login
-      verifyLogin(setIsLoggedIn, setCurrentUser, error);
-    }
-  }, [verifyLogin]);
-  
-  
-  const handleFormSubmit = (event) => {
+  const handleLoginForm = (event) => {
     event.preventDefault();
     const username = document.getElementById("logUsername").value;
     const password = document.getElementById("logPassword").value;
-
     handleLogin(username, password);
   };
 
@@ -227,14 +316,6 @@ function TopBar({ isLoggedIn, currentUser, logoutUser }) {
       setError("Passwords don't match!");
       return;
     }
-
-    // Validate email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email)) {
-      setError("Invalid email format");
-      return;
-    }
-    
 
     if (!username || !email || !password) {
       setError("Please fill in all fields");
@@ -264,7 +345,7 @@ function TopBar({ isLoggedIn, currentUser, logoutUser }) {
             .then((response) => {
               if (response.ok) {
                 // If the user was created successfully, redirect to the login page
-                window.location.href = "/verify";
+                window.location.href = "/login";
               }
             })
             .then(() => {
@@ -279,79 +360,105 @@ function TopBar({ isLoggedIn, currentUser, logoutUser }) {
         }
       })
       .catch((error) => {
-        setError(error.messawige);
+        setError(error.message);
       });
   };
 
-  const logoutUser = async () => {
-    const response = await fetch(`/user/logout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (response.status === 200){
-      setIsLoggedIn(false);
-      setCurrentUser(null);
-      alert("Logged out!");
-      window.location.reload();
+  const verifyEmail = () => {
+    const email = document.getElementById("verifyEmail").value;
+    if (email.trim == ""){
+      alert("Please enter your email");
+      return;
     } else {
-      alert(`Undifined error: ${response}`);
+      const data = { email };
+      // Send a POST request to the server to verify the email
+      fetch("/user/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("Failed to verify email");
+          }
+        })
+        .then((result) => {
+          // Handle the result from the server
+          alert("Email verification successful. Link has been sent to email");
+        })
+        .catch((error) => {
+          alert("Error " + error.message);
+        });
     }
-    
   };
-  //verifyLogin()
-  return (
-    <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-      <div id="topbarToggleButtonSidebar">
-        <button
-          id="sidebarToggleTop"
-          className="btn btn-link d-md-none rounded-circle mr-3"
-        >
-          <i className="fa fa-bars"></i>
-        </button>
-      </div>
 
-      <ul className="navbar-nav ml-auto">
-      {isLoggedIn ? (
-        
-        // If the user is logged in, display user inforation and logout button
-        <div>
-          <li className="nav-item dropdown no-arrow mx-1">
-            <a
-              className="nav-link dropdown-toggle text-black-50"
-              href="#"
-              id="userDropdown"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-            <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-              Welcome, {currentUser}
-              </span>
-              <img className="img-profile rounded-circle"></img>
-            </a>
-
-            <div
-              className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-              aria-labelledby="userDropdown"
-            >
-              <a className="dropdown-item" href="profile.html">
-                <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                Profile
-              </a>
-              <div className="dropdown-divider"></div>
-              <a className="dropdown-item" onClick={logoutUser}>
-                <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                Logout
-              </a>
-            </div>
-          </li>
+  verifyLogin()
+  console.log(loggedInUser)
+  console.log(isLoggedIn)
+  if(isLoggedIn){ 
+    return (
+      <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+        <div id="topbarToggleButtonSidebar">
+          <button
+            id="sidebarToggleTop"
+            className="btn btn-link d-md-none rounded-circle mr-3"
+          >
+            <i className="fa fa-bars"></i>
+          </button>
         </div>
-      ) : (
-        // If the user is not logged in, display login and signup buttons 
-        <div>
+        <ul className="navbar-nav ml-auto">
+        <li className="nav-item dropdown no-arrow">
+          <a
+            className="nav-link dropdown-toggle"
+            href="#"
+            id="userDropdown"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <span className="mr-2 d-none d-lg-inline text-gray-600 small">
+              Welcome {loggedInUser}
+            </span>
+            <img className="img-profile rounded-circle"></img>
+          </a>
+
+          <div
+            className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+            aria-labelledby="userDropdown"
+          >
+            <a className="dropdown-item" href="profile.html">
+              <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+              Profile
+            </a>
+            <div className="dropdown-divider"></div>
+            <a className="dropdown-item" onClick={logoutUser}>
+              <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+              Logout
+            </a>
+          </div>
+        </li>
+      </ul>
+      </nav>
+    );
+  }else{
+    return (
+      <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+        <div id="topbarToggleButtonSidebar">
+          <button
+            id="sidebarToggleTop"
+            className="btn btn-link d-md-none rounded-circle mr-3"
+          >
+            <i className="fa fa-bars"></i>
+          </button>
+        </div>
+  
+        <ul className="navbar-nav ml-auto">
+         
           <li className="nav-item dropdown no-arrow mx-1">
             <a
               className="nav-link dropdown-toggle text-black-50"
@@ -362,135 +469,171 @@ function TopBar({ isLoggedIn, currentUser, logoutUser }) {
               aria-haspopup="true"
               aria-expanded="false"
             >
-              Log in
+              LogIn
             </a>
-
+  
             <div
               className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
               aria-labelledby="alertsDropdown"
-              >
+            >
               <h6 className="dropdown-header">
-                Please enter your details below
+                Please enter your details bellow
               </h6>
               <a className="dropdown-item d-flex align-items-center" href="#">
                 <form
-                  onSubmit={handleFormSubmit}
+                  onSubmit={handleLoginForm}
                   className="user"
                   style={{ width: `100%` }}
                 >
-                <div className="form-group">
-                  <input
+                  <div className="form-group">
+                    <input
                       type="text"
                       placeholder="Enter Username"
                       id="logUsername"
                       className="form-control form-control-user"
-                  />
-                  <input
-                    type="password"
-                    placeholder="Enter Password"
-                    id="logPassword"
-                    className="form-control form-control-user"
-                  />
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-user btn-block"
-                  >
-                    Log in
-                  </button>
-                </div>
-              </form>
-            </a>     
-          </div>
-        </li>
-            <li className="nav-item dropdown no-arrow mx-1">
-          <a
-            className="nav-link dropdown-toggle text-black-50"
-            href="#"
-            id="alertsDropdown"
-            role="button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Sign up
-          </a>
-
-          <div
-            className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-            aria-labelledby="alertsDropdown"
-          >
-            <h6 className="dropdown-header">
-              Please enter your details bellow
-            </h6>
-            <a className="dropdown-item d-flex align-items-center" href="#">
-              <form
-                onSubmit={handleSignUp}
-                className="user"
-                style={{ width: `100%` }}
-              >
-                <div className="form-group">
-                  <input
-                    type="text"
-                    className="form-control form-control-user"
-                    placeholder="Enter Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    className="form-control form-control-user"
-                    placeholder="Enter Email Address "
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <input
-                    type="password"
-                    className="form-control form-control-user"
-                    placeholder="Enter Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <input
-                    type="password"
-                    className="form-control form-control-user"
-                    placeholder="Confirm Password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-user btn-block"
-                  >
-                    Sign Up
-                  </button>
-                  {error && <p className="error">{error}</p>}
-                </div>
-              </form>
-            </a>
+                      required
+                    />
+                    <input
+                      type="password"
+                      placeholder="Enter Password"
+                      id="logPassword"
+                      className="form-control form-control-user"
+                      required
+                    />
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-user btn-block"
+                    >
+                      Login
+                    </button>
+                  </div>
+                </form>
+              </a>
+            </div>
+          </li>
+          <li className="nav-item dropdown no-arrow mx-1">
             <a
-              className="dropdown-item text-center small text-gray-500"
-              href="/verify"
+              className="nav-link dropdown-toggle text-black-50"
+              href="#"
+              id="alertsDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
             >
-              Reset Password
+              SignUp
             </a>
-          </div>
-        </li>
+  
+            <div
+              className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+              aria-labelledby="alertsDropdown"
+            >
+              <h6 className="dropdown-header">
+                Please enter your details bellow
+              </h6>
+              <a className="dropdown-item d-flex align-items-center" href="#">
+                <form
+                  onSubmit={handleSignUp}
+                  className="user"
+                  style={{ width: `100%` }}
+                >
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      className="form-control form-control-user"
+                      placeholder="Enter Username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                    />
+                    <input
+                      type="email"
+                      className="form-control form-control-user"
+                      placeholder="Enter Email Address "
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                    <input
+                      type="password"
+                      className="form-control form-control-user"
+                      placeholder="Enter Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <input
+                      type="password"
+                      className="form-control form-control-user"
+                      placeholder="Confirm Password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-user btn-block"
+                    >
+                      Sign Up
+                    </button>
+                    {error && <p className="error">{error}</p>}
+                  </div>
+                </form>
+              </a>
+            </div>
+          </li>
+          <li className="nav-item dropdown no-arrow mx-1">
+            <a
+              className="nav-link dropdown-toggle text-black-50"
+              href="#"
+              id="alertsDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Reset PW
+            </a>
+            <div
+              className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+              aria-labelledby="alertsDropdown"
+            >
+              <h6 className="dropdown-header">Please enter your e-mail bellow</h6>
+              <a className="dropdown-item d-flex align-items-center" href="#">
+                <form
+                  onSubmit={verifyEmail}
+                  className="user"
+                  style={{ width: `100%` }}
+                >
+                  <div className="form-group">
+                    <input
+                      type="email"
+                      id="verifyEmail"
+                      placeholder="Email address"
+                      className="form-control form-control-user"
+                      required
+                    />
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-user btn-block"
+                    >
+                      Verify
+                    </button>
+                  </div>
+                </form>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    );
 
-          </div>
-
-          
-        )}
-        <div className="topbar-divider d-none d-sm-block"></div>
-      </ul>
-    </nav>
-  );
+  }
+  
 }
 
-
-
-
 function Footer() {
-  useScript()
+  useScript();
   return (
     <footer className="sticky-footer bg-white">
       <div className="container my-auto">
@@ -501,17 +644,14 @@ function Footer() {
       <a className="scroll-to-top rounded" href="#page-top">
         <i className="fas fa-angle-up"></i>
       </a>
-    
     </footer>
   );
 }
-
 
 const sidebar = ReactDOM.createRoot(document.getElementById("sidebar"));
 const topbar = ReactDOM.createRoot(document.getElementById("topbar"));
 const footer = ReactDOM.createRoot(document.getElementById("footer"));
 
 sidebar.render(<AppWidget area="sidebar" />);
-topbar.render(<AppWidget area="topbar" isLoggedIn={isLoggedIn} currentUser={currentUser} logoutUser={logoutUser} />);
+topbar.render(<AppWidget area="topbar" />);
 footer.render(<AppWidget area="footer" />);
-

@@ -2,7 +2,7 @@ export const isAuthenticated = (req, res, next) => {
     // Check if the user is authenticated
     // If authenticated, call next()
     // If not, redirect to login 
-    if (req.isAuthenticated()) {
+    if (req.session.username) {
         return next();
     }
     res.status(403).send({ msg: 'You are not authorized to view this page!' });

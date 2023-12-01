@@ -111,9 +111,9 @@ app.use((req, res, next) => {
   });
 
 app.use((req, res, next) => {
-    if (req.session.username) {
+    if (req.session) {
         let expiry = DateTime.now().plus({ hours: 1 }).toISO();
-        req.session.username.expiry = expiry;
+        req.session.expiry = expiry;
         next();
     }else {
         res.status(403).send({ msg: "You must be logged in to access this resources"})

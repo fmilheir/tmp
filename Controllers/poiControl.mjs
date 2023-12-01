@@ -85,7 +85,8 @@ class PointsOfInterestController {
           const pointsOfInterestModel = new PointsOfInterestModel();
           const pointOfInterest = await pointsOfInterestModel.getPointOfInterestByRegion(pointOfInterestRegion);
     
-          if (pointOfInterest) {
+          if (pointOfInterest.length > 0) {
+            console.log(pointOfInterest)
             res.json(pointOfInterest);
           } else {
             res.status(404).json({ error: 'Point of interest not found.' });
@@ -96,13 +97,14 @@ class PointsOfInterestController {
     }
 
     static async addRecomendationToPoi(req, res) {
-      const poiID = req.params.id
+      const poiID = req.body.poi_id
   
       try {
-        const pointsOfInterestModel = new PointsOfInterestModel();
-        const pointOfInterestId = await pointsOfInterestModel.addRecomendationToPoi({poiID});
+        //const pointsOfInterestModel = new PointsOfInterestModel();
+        const pointOfInterestId = await new PointsOfInterestModel().addRecomendationToPoi(poiID);
         res.json({ pointOfInterestId });
       } catch (error) {
+        console.log(error)
         res.status(500).json({ error: error.message });
       }
     }

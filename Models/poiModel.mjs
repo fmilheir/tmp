@@ -72,7 +72,7 @@ class PointsOfInterestModel {
       // Add a recomendation to a specific poi
       async addRecomendationToPoi(poiID) {
         try {
-          const query = `UPDATE point_of_interest SET recommendations=recommendations+1 WHERE id=?`;
+          const query = 'UPDATE point_of_interest SET recommendations=recommendations+1 WHERE id = ?';
           const [rows] = await pool.query(query, [poiID]);
           return rows;
         } catch (error) {
