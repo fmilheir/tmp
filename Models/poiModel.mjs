@@ -13,14 +13,14 @@ class PointsOfInterestModel {
   
     // Add a new point of interest
 
-    async addPointOfInterest({ name, type, country, region, lon, lat, description, recommendations }) {
+    async addPointOfInterest({ name, type, country, region, lon, lat, description, recommendations, image }) {
       try {
         const query = `
-          INSERT INTO point_of_interest (name, type, country, region, lon, lat, description, recommendations)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO point_of_interest (name, type, country, region, lon, lat, description, recommendations, image)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
   
-        const [result] = await pool.query(query, [name, type, country, region, lon, lat, description, recommendations]);
+        const [result] = await pool.query(query, [name, type, country, region, lon, lat, description, recommendations, image]);
 
         return result.insertId;
       } catch (error) {

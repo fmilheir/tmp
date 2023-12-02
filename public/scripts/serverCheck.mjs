@@ -35,11 +35,20 @@ async function startConnection() {
         lon DECIMAL(10, 6),
         lat DECIMAL(10, 6),
         description TEXT,
-        recommendations TEXT
-
+        recommendations TEXT,
+        image INT DEFAULT NULL
       )
     `);
     console.log('Checked "point_of_interest" table.');
+
+    /////////// Create a table for the images 
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS images (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        base BLOB 
+      )
+    `);
+    console.log('Checked "images" table.');
 
     connection.release(); // Release the connection back to the pool
 

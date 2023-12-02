@@ -2,6 +2,7 @@ import express from "express";
 import cors from  'cors';
 import UserRoute from '../../routes/userRoute.mjs';
 import Poirouter from "../../routes/poiRoute.mjs";
+import ImageRouter from "../../routes/imageRoute.mjs";
 import path from 'path';
 import { fileURLToPath } from "url";
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/user', UserRoute);
 app.use('/poi', Poirouter);
+app.use('/image', ImageRouter);
 app.use(express.static("publid"));
 app.use("/public", express.static('./public/'));
 
@@ -42,7 +44,7 @@ const swaggerOptions = {
         }
     },
     //apis: ['../../routes/*.js'] // files containing annotations as above#
-    apis: ['routes/poiRoute.mjs', 'routes/userRoute.mjs']
+    apis: ['routes/poiRoute.mjs', 'routes/userRoute.mjs', 'routes/imageRoute.mjs']
     
 };
 
