@@ -281,7 +281,9 @@ function TopBar({ verifyLogin }) {
           <div
             className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
             aria-labelledby="alertsDropdown"
+
             id="login"
+
           >
             <h6 className="dropdown-header">
               Please enter your details bellow
@@ -321,6 +323,7 @@ function TopBar({ verifyLogin }) {
               Reset Password
             </a>
           </div>
+
           <div
             className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
             aria-labelledby="alertsDropdown"
@@ -365,6 +368,7 @@ function TopBar({ verifyLogin }) {
               Reset Password
             </a>
           </div>
+
         </li>
 
         <li className="nav-item dropdown no-arrow mx-1">

@@ -12,6 +12,7 @@ class PointsOfInterestModel {
     }
   
     // Add a new point of interest
+
     async addPointOfInterest({ name, type, country, region, lon, lat, description, recommendations }) {
       try {
         const query = `
@@ -20,6 +21,7 @@ class PointsOfInterestModel {
         `;
   
         const [result] = await pool.query(query, [name, type, country, region, lon, lat, description, recommendations]);
+
         return result.insertId;
       } catch (error) {
         throw error;

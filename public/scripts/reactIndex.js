@@ -86,7 +86,9 @@ function AppWidget({ title }) {
 	}
 
 	async function addNewPoi(POI) {
-		const response = await fetch(`http://localhost:3000/poi/add`, {
+
+		const response = await fetch(`http://localhost:3000/poi/pointsOfInterest`, {
+
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

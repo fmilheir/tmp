@@ -1,3 +1,4 @@
+
 let marker;
 function Region({ title }) {
   //// (4)
@@ -11,6 +12,7 @@ function Region({ title }) {
 
   const [poi, setPoi] = React.useState([]);
   const [map, setMap] = React.useState(null);
+
 
   React.useEffect(() => {
     /// map (8)
@@ -33,10 +35,23 @@ function Region({ title }) {
       Latitude = e.latlng.lat;
       Longtitude = e.latlng.lng;
       const pos = [Latitude, Longtitude];
+
+      ////////////////////////////////////////////////////////////////////   // picture upload
+      const domForm = document.createElement("div"); // form for the picture
+      domForm.innerHTML = `
+                <form method='post' enctype='multipart/form-data' action="/photos/upload" id="uploadform">
+                <h3>Would you like to add a picture?<h3> <input type='file' id='userPhoto' />
+                <button id='uploadBtn' value='Upload'>upload</button>
+                <button id='no' value='no'>No, Skipp -></button>
+                </form>
+            `;
+
+
       ////////////////////////////////////////////////////////////////////////////////// picture upload over
       const domDiv = document.createElement("div");
       domDiv.innerHTML = `
             <form id="poi-form">
+
               <h6>Please enter the details of the POI you wich to add<h6>
                 <input type="text" id="name" name="name" placeholder="Please enter the Name" class="form-control form-control-user">
                 <input type="text" id="type" name="type" placeholder="Please enter the Type" class="form-control form-control-user">
@@ -57,6 +72,7 @@ function Region({ title }) {
                       <button id='no' value='no' class="btn btn-primary btn-user " >No </button>
                     </form>`;
 
+
       let popupp = false;
 
       domDiv.addEventListener("submit", (event) => {
@@ -68,6 +84,7 @@ function Region({ title }) {
         const country = formData.get("country");
         const region = formData.get("region");
         const description = formData.get("description");
+
 
         if (
           name.trim() == "" ||
@@ -158,6 +175,7 @@ function Region({ title }) {
           };
           
         }
+
       });
 
       const marker = L.marker(pos).addTo(map);
@@ -198,11 +216,13 @@ function Region({ title }) {
 
   function searchByRegion() {
     /// search /////////////// (4)
+
     const regionName = document.getElementById("searchValue").value;
     console.log(regionName);
     if (regionName.trim == "") {
       alert("Please enter a region first");
     } else {
+
       
       fetch(
         `http://localhost:3000/poi/pointsOfInterestByRegion/${regionName}`,
@@ -210,6 +230,7 @@ function Region({ title }) {
           method: "GET",
         }
       )
+
         //.then((response) =>response.json())
         .then((response) => {
           if (response.status == 404) {
@@ -226,7 +247,9 @@ function Region({ title }) {
             const lat = poi.lat;
             const lon = poi.lon;
             let markerLet = [lat, lon];
+
             marker = L.marker(markerLet).addTo(map);
+
             marker.bindPopup(`
                           <h3 id="namep" >${poi.name}</h3>
                           <img src="/photos/${poi.id}.jpeg" alt="There is no picture" width="200" height="300" onError="this.style.display='none';">
@@ -261,7 +284,9 @@ function Region({ title }) {
   };
 
   return (
+
     <div className="container-fluid">
+
       <div>
         <h1 className="h3 mb-0 text-gray-800">{title}</h1>
         <div className="d-sm-flex align-items-center justify-content-between mb-4">
@@ -343,6 +368,7 @@ function Region({ title }) {
     </div>
   );
 }
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Region title="Search by region" />);

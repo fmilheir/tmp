@@ -36,6 +36,7 @@ async function startConnection() {
         lat DECIMAL(10, 6),
         description TEXT,
         recommendations TEXT
+
       )
     `);
     console.log('Checked "point_of_interest" table.');

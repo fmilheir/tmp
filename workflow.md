@@ -55,3 +55,26 @@ excluding node modules, we enhance deployment efficiency and accelerate build ti
 and encompasses all the essential environment variables necessary for establishing a connection.
 * Additionally, a volume has been mounted to the database container to ensure data persistence beyond the container's lifecycle.
 
+
+## User
+
+### Front-end User
+
+* Renato write everything you have done with the user on the front end! 
+
+### Back-end User
+
+* Olah needs to write what you have done so far in the back end
+
+
+## Point of Interest 
+
+### Cleint side Interest
+
+* Renato do it 
+
+### Server side Point of Interest
+
+* Boyszy
+
+

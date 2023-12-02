@@ -60,7 +60,8 @@ class userController {
       res.status(201).json({ message: "User registered. Please check your email to verify account",  verificationCode });
       console.log(verificationCode)
     } catch (err) {
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(500).json({ error: error.message });
+
     }
   }
     

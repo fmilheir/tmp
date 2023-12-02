@@ -16,7 +16,11 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.6.2",
     "nodemailer": "^6.9.7",
-    "react-i18next": "^13.5.0"
+
+    "react-i18next": "^13.5.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
+
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
