@@ -12,8 +12,9 @@ class PointsOfInterestController {
     }
   
     static async addPointOfInterestController(req, res) {
-      const {name, type, country, region, lon, lat, description, recommendations, image} = req.body
-  
+
+      const {name, type, country, region, lon, lat, description, recommendations} = req.body
+
       try {
         const pointsOfInterestModel = new PointsOfInterestModel();
         const pointOfInterestId = await pointsOfInterestModel.addPointOfInterest({
@@ -24,8 +25,7 @@ class PointsOfInterestController {
           lon,
           lat,
           description,
-          recommendations,
-          image
+          recommendations
         });
         res.json({ pointOfInterestId });
       } catch (error) {

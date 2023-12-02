@@ -4,8 +4,10 @@ import UserRoute from '../../routes/userRoute.mjs';
 import Poirouter from "../../routes/poiRoute.mjs";
 import path from 'path';
 import { fileURLToPath } from "url";
+
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
+
 const __dirname = path.resolve();
 
 const app = express();
@@ -18,6 +20,7 @@ app.use('/user', UserRoute);
 app.use('/poi', Poirouter);
 app.use(express.static("publid"));
 app.use("/public", express.static('./public/'));
+
 
 ///// sswagger
 const swaggerOptions = {
@@ -45,6 +48,7 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+
 
 
 app.get("/", (req, res) => {

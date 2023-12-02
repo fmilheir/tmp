@@ -281,6 +281,9 @@ function TopBar({ verifyLogin }) {
           <div
             className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
             aria-labelledby="alertsDropdown"
+
+            id="login"
+
           >
             <h6 className="dropdown-header">
               Please enter your details bellow
@@ -320,6 +323,52 @@ function TopBar({ verifyLogin }) {
               Reset Password
             </a>
           </div>
+
+          <div
+            className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+            aria-labelledby="alertsDropdown"
+            id="resetPass"
+            style={{display:"none"}}
+          >
+            <h6 className="dropdown-header">
+              Please enter your e-mail bellow
+            </h6>
+            <a className="dropdown-item d-flex align-items-center" href="#">
+              <form
+                onSubmit={handleFormSubmit}
+                className="user"
+                style={{ width: `100%` }}
+              >
+                <div className="form-group">
+                  <input
+                    type="text"
+                    placeholder="Enter Username"
+                    id="logUsername"
+                    className="form-control form-control-user"
+                  />
+                  <input
+                    type="password"
+                    placeholder="Enter Password"
+                    id="logPassword"
+                    className="form-control form-control-user"
+                  />
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-user btn-block"
+                  >
+                    Login
+                  </button>
+                </div>
+              </form>
+            </a>
+            <a
+              className="dropdown-item text-center small text-gray-500"
+              href="#"
+            >
+              Reset Password
+            </a>
+          </div>
+
         </li>
 
         <li className="nav-item dropdown no-arrow mx-1">

@@ -7,7 +7,9 @@ import { isAuthenticated, isAdmin } from '../middleware/auth.mjs';
 const router = express.Router();
 
 router.get('/all', userController.getAllUsersController);
-router.post('/signup', userController.addUserController);  
+
+router.post('/signup', userController.addUserController); 
+
 router.delete('/users/:userId', userController.deleteUserController); 
 router.get('/users/username/:username', userController.getUserByUsernameController);
 router.get('/verifylogin', userController.verifyLoguin);
@@ -44,6 +46,7 @@ router.post('/checkusername', async(req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
 
 //////// Swagger Annotations
 //// Schema:
@@ -157,5 +160,6 @@ router.post('/checkusername', async(req, res) => {
  *                   type: string
  *                   description: Error message indicating an internal server error.
  */
+
 
 export default router;

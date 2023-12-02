@@ -1,17 +1,19 @@
+
+let marker;
 function Region({ title }) {
   //// (4)
-//check use of this variables//
-//
-//
-//
-//
-//
-//
+  //check use of this variables//
+  //
+  //
+  //
+  //
+  //
+  //
 
   const [poi, setPoi] = React.useState([]);
   const [map, setMap] = React.useState(null);
-  
- 
+
+
   React.useEffect(() => {
     /// map (8)
 
@@ -33,6 +35,7 @@ function Region({ title }) {
       Latitude = e.latlng.lat;
       Longtitude = e.latlng.lng;
       const pos = [Latitude, Longtitude];
+
       ////////////////////////////////////////////////////////////////////   // picture upload
       const domForm = document.createElement("div"); // form for the picture
       domForm.innerHTML = `
@@ -43,17 +46,32 @@ function Region({ title }) {
                 </form>
             `;
 
+
       ////////////////////////////////////////////////////////////////////////////////// picture upload over
       const domDiv = document.createElement("div");
       domDiv.innerHTML = `
             <form id="poi-form">
-                <input type="text" id="name" name="name" placeholder="Input the name of the Place" ><br>
-                <input type="text" id="type" name="type" placeholder="Is it a city? or town?" ><br>
-                <input type="text" id="country" name="country" placeholder="What country?" ><br>
-                <input type="text" id="region" name="region" placeholder="Input the region of the Place" ><br>
-                <textarea id="description" name="description" placeholder="Describe the place" ></textarea><br>
-                <button id="submit" type="submit">Submit</button>
+
+              <h6>Please enter the details of the POI you wich to add<h6>
+                <input type="text" id="name" name="name" placeholder="Please enter the Name" class="form-control form-control-user">
+                <input type="text" id="type" name="type" placeholder="Please enter the Type" class="form-control form-control-user">
+                <input type="text" id="country" name="country" placeholder="Please enter the Country" class="form-control form-control-user">
+                <input type="text" id="region" name="region" placeholder="Please enter the Region" class="form-control form-control-user">
+                <textarea id="description" name="description" placeholder="Describe the place" class="form-control form-control-user"></textarea>
+                <button id="submit" type="submit" class="btn btn-primary btn-user btn-block">Submit</button>
             </form> `;
+
+      ////////////////////////////////////////////////////////////////////   // picture upload
+      const domForm = document.createElement("div");
+       // form for the picture
+      domForm.innerHTML = `
+                    <form method='post' enctype='multipart/form-data' action="/photos/upload" id="uploadform">
+                      <h6>Would you like to add a picture?<h6> 
+                      <input type='file' id='imageInput'/><br>
+                      <button id='uploadBtn' value='Upload' class="btn btn-primary btn-user">upload</button>
+                      <button id='no' value='no' class="btn btn-primary btn-user " >No </button>
+                    </form>`;
+
 
       let popupp = false;
 
@@ -66,147 +84,98 @@ function Region({ title }) {
         const country = formData.get("country");
         const region = formData.get("region");
         const description = formData.get("description");
-        const recomendations = 0;
+
 
         if (
-          name.trim == "" ||
-          type.trim == "" ||
-          country.trim == "" ||
-          region.trim == "" ||
-          description.trim == ""
+          name.trim() == "" ||
+          type.trim() == "" ||
+          country.trim() == "" ||
+          region.trim() == "" ||
+          description.trim() == ""
         ) {
           alert("Please fill in all the fields!");
           return;
+        } else {
+          const newPoi = {
+            name: name,
+            type: type,
+            country: country,
+            region: region,
+            lon: Longtitude,
+            lat: Latitude,
+            description: description,
+            recommendations: 0,
+          };
+          marker.bindPopup(domForm).openPopup();
+
+          addEventListener("click", (event) => {
+            // if the no button pressed it wont show any pictures!
+            if (event.target.id === "no") {
+              sendPoi();
+              marker
+                .bindPopup(
+                  `<h3>${name}</h3> 
+                            <p> ${description}</p>`
+                )
+                .openPopup();
+            }else if(event.target.id === "uploadBtn"){
+              sendPoi();
+            }
+          });
+          /////////// Poi upload code
+          const sendPoi = async() =>{
+            fetch(`http://localhost:3000/poi/pointsOfInterest`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(newPoi),
+            }).then((response) => {
+              
+              if (response.status == 200) {
+                alert("Place added successfully!");
+                response.json().then(
+                  (data) => {
+                    // this line is picture
+                    popupp = true; // needed
+                    let poiId = data.pointOfInterestId; // returned id for the poi
+                    console.log(poiId);
+                    sendFiles();
+                  } // stay inside
+                );
+              } else if (response.status === 401) {
+                // (11)
+                alert("You are not logged in!");
+                map.removeLayer(marker);
+              } else {
+                map.removeLayer(marker);
+              }
+              //return response.json();
+            });
+          }
+          /////////// picture upload code
+          const sendFiles = async () => {
+            console.log("sendingfiles")
+            ////////////////////////// (picture upload)
+
+            const fileInput = document.getElementById("imageInput");
+            //new way with base 64
+            fileInput.addEventListener("change", function () {
+              const file = fileInput.files[0];
+              const reader = new FileReader();
+             
+              reader.onload = function () {
+                const base64String = reader.result.split(",")[1]; // Get the Base64 string
+                console.log(base64String);
+                // Now you can store the base64String in your database
+              };
+             
+              reader.readAsDataURL(file); // Convert the image to Base64
+            });
+          };
+          
         }
 
-        const newPoi = {
-          name: name,
-          type: type,
-          country: country,
-          region: region,
-          lon: Longtitude,
-          lat: Latitude,
-          description: description,
-          recommendations: 0,
-        };
-        fetch(`http://localhost:3000/poi/pointsOfInterest`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newPoi),
-        }).then((response) => {
-          if (response.status === 201) {
-            response.json().then(
-              (data) => {
-                // this line is picture
-                alert("Place added successfully!");
-                console.log(response);
-                //marker.bindPopup(`<h3>${name}</h3> <p> ${description}</p>`).openPopup();  // initial (8)
-                popupp = true; // needed
-
-                let poiId = data.id.lastInsertRowid; // returned id for the poi
-                console.log(poiId);
-
-                marker.bindPopup(domForm).openPopup();
-                //////////// picture upload code
-
-                const sendFiles = async () => {
-                  ////////////////////////// (picture upload)
-                  let filename = "picture";
-
-                  const myfiles = document.getElementById("userPhoto").files;
-
-                  const formData = new FormData();
-                  let extension = "";
-
-                  Object.keys(myfiles, filename).forEach((key) => {
-                    //formData.append(myfiles.item(key).name,myfiles.item(key))
-                    let file = myfiles.item(key);
-                    extension = file.name.split(".").pop();
-                    //formData.append(file.name, file, `${poiId}.jpeg`); // working
-                    formData.append(
-                      file.name,
-                      file,
-                      `${poiId}.${file.name.split(".").pop()}`
-                    ); // working
-
-                    //formData.append(filename, myfiles.item(key)); // initial
-                  });
-                  const response = await fetch(
-                    "http://localhost:3000/photos/upload",
-                    {
-                      method: "POST",
-                      body: formData,
-                    }
-                  );
-                  if (response.status == 500) {
-                    // check if response is not okay
-                    alert("Upload failed. Please try again.");
-                    return;
-                  } else if (response.status == 400) {
-                    alert("Please upload a file or press Skipp");
-                    return;
-                  } else if (response.status == 422) {
-                    alert("Wrong file format");
-                    return;
-                  } else {
-                    alert("Upload successful.");
-                    marker
-                      .bindPopup(
-                        `<h3>${name}</h3> 
-                                    <img src="/photos/${poiId}.${extension}" alt="There is no picture" width="200" height="300">
-                                    <p> ${description}</p>`
-                      )
-                      .openPopup();
-                    ////////////////////////////////////
-                    // Changing the extension back to jpeg to facilitate img search in search!!!!!!!!!!!!!
-                    const oldFilename = `${poiId}.${extension}`;
-                    const newFilename = `${poiId}.jpeg`;
-                    const fileUrl = `/photos/${oldFilename}`;
-                    const newFileUrl = `/photos/upload`;
-                    const file = await fetch(fileUrl).then((res) => res.blob());
-
-                    const formData = new FormData();
-                    formData.append("file", file, newFilename);
-                    const options = {
-                      method: "POST",
-                      body: formData,
-                    };
-                    fetch(newFileUrl, options);
-                    ///////////////////////////////////////////
-                    const json = await response.json();
-                  }
-                };
-                //////////////// need to finish the code after the click of the button
-                domForm.addEventListener("submit", (e) => {
-                  // event listener
-                  e.preventDefault();
-                  sendFiles();
-                });
-
-                addEventListener("click", (event) => {
-                  // if the no button pressed it wont show any pictures!
-                  if (event.target.id === "no") {
-                    marker
-                      .bindPopup(
-                        `<h3>${name}</h3> 
-                                    <p> ${description}</p>`
-                      )
-                      .openPopup();
-                  }
-                });
-              } // stay inside
-            );
-          } else if (response.status === 401) {
-            // (11)
-            alert("You are not logged in!");
-            map.removeLayer(marker);
-          } else {
-            map.removeLayer(marker);
-          }
-          //return response.json();
-        });
       });
 
       const marker = L.marker(pos).addTo(map);
@@ -253,9 +222,15 @@ function Region({ title }) {
     if (regionName.trim == "") {
       alert("Please enter a region first");
     } else {
-      fetch(`http://localhost:3000/poi/pointsOfInterestByRegion/${regionName}`, {
-        method: "GET",
-      })
+
+      
+      fetch(
+        `http://localhost:3000/poi/pointsOfInterestByRegion/${regionName}`,
+        {
+          method: "GET",
+        }
+      )
+
         //.then((response) =>response.json())
         .then((response) => {
           if (response.status == 404) {
@@ -272,7 +247,9 @@ function Region({ title }) {
             const lat = poi.lat;
             const lon = poi.lon;
             let markerLet = [lat, lon];
-            const marker = L.marker(markerLet).addTo(map);
+
+            marker = L.marker(markerLet).addTo(map);
+
             marker.bindPopup(`
                           <h3 id="namep" >${poi.name}</h3>
                           <img src="/photos/${poi.id}.jpeg" alt="There is no picture" width="200" height="300" onError="this.style.display='none';">
@@ -307,7 +284,9 @@ function Region({ title }) {
   };
 
   return (
-    <div className= "container-fluid">
+
+    <div className="container-fluid">
+
       <div>
         <h1 className="h3 mb-0 text-gray-800">{title}</h1>
         <div className="d-sm-flex align-items-center justify-content-between mb-4">
@@ -389,7 +368,6 @@ function Region({ title }) {
     </div>
   );
 }
-
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

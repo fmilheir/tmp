@@ -61,6 +61,7 @@ class userController {
       console.log(verificationCode)
     } catch (err) {
       res.status(500).json({ error: error.message });
+
     }
   }
     

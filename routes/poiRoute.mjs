@@ -19,6 +19,7 @@ router.get('/pointsOfInterest/:id', PointsOfInterestController.getPointOfInteres
 
 router.post('/recommend/:id', PointsOfInterestController.addRecomendationToPoi);
 
+
 //////////////// Swagger Annotations
 //// Schema:
 /**
@@ -146,5 +147,6 @@ router.post('/recommend/:id', PointsOfInterestController.addRecomendationToPoi);
  *                   type: string
  *                   description: Error message indicating an internal server error.
  */
+
 
 export default router;

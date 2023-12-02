@@ -35,8 +35,8 @@ async function startConnection() {
         lon DECIMAL(10, 6),
         lat DECIMAL(10, 6),
         description TEXT,
-        recommendations TEXT,
-        image BLOB
+        recommendations TEXT
+
       )
     `);
     console.log('Checked "point_of_interest" table.');

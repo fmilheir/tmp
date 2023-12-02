@@ -41,6 +41,7 @@ function Pois({ title }) {
       .then((data) => {
         setPoi(data);
       });
+
       
       React.useEffect(()=>{
         // create a table with elements to test if datatable will work
@@ -106,6 +107,7 @@ function Pois({ title }) {
         
         document.getElementById("table_id").replaceWith(table1);
       }, []);
+
   /////////////////////////////////////////////// (13) till here
   return (
     <div>
