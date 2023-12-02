@@ -37,14 +37,7 @@ function Region({ title }) {
       const pos = [Latitude, Longtitude];
 
       ////////////////////////////////////////////////////////////////////   // picture upload
-      const domForm = document.createElement("div"); // form for the picture
-      domForm.innerHTML = `
-                <form method='post' enctype='multipart/form-data' action="/photos/upload" id="uploadform">
-                <h3>Would you like to add a picture?<h3> <input type='file' id='userPhoto' />
-                <button id='uploadBtn' value='Upload'>upload</button>
-                <button id='no' value='no'>No, Skipp -></button>
-                </form>
-            `;
+  
 
 
       ////////////////////////////////////////////////////////////////////////////////// picture upload over

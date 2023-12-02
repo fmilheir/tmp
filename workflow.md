@@ -1,5 +1,13 @@
 # Workflow
 
+## Running the Project:
+
+* Clone the reposatory
+* Cmd the root directory and input: docker-compose up --build
+* Once you see the sign of: app listening at http://localhost:3000 ✓
+* The Aplication can be observed on the link. 
+
+
 ## Project  Initiation:
 
 * Formation of a cross-functional DevOps team with a focus on role distribution.
@@ -54,6 +62,13 @@ excluding node modules, we enhance deployment efficiency and accelerate build ti
 ```
 and encompasses all the essential environment variables necessary for establishing a connection.
 * Additionally, a volume has been mounted to the database container to ensure data persistence beyond the container's lifecycle.
+
+## Testing
+
+### Swagger
+
+* Swagger option 
+
 
 
 ## User

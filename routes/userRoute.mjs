@@ -160,6 +160,31 @@ router.post('/checkusername', async(req, res) => {
  *                   type: string
  *                   description: Error message indicating an internal server error.
  */
+/**
+* @swagger
+* /user/users/{id}:
+*   delete:
+*     summary: Delete a User. 
+*     tags: [Users]
+*     description: This API will delete a particular User.
+*     parameters:
+*       - in: path
+*         name: id
+*         required: true
+*         description: The ID of the image to delete.
+*         schema:
+*           type: integer
+*     responses:
+*       200:
+*         description: Successful Deletiion
+
+*       400:
+*         description: Bad request
+*       404:
+*         description: Not found
+*       500:
+*         description: Server error
+*/
 
 
 export default router;
