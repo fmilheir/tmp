@@ -23,7 +23,7 @@ router.post('/signup', userController.addUserController);
 
 router.delete('/users/:userId', userController.deleteUserController); 
 router.get('/users/username/:username', userController.getUserByUsernameController);
-router.get('/verifylogin', userController.verifyLoguin);
+router.get('/verifylogin', userController.verifyLogin);
 router.post('/login', userController.login);
 router.post('/logout', userController.logout);
 router.post('/verify-account', userController.verifyAccount);

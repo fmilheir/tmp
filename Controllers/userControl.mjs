@@ -23,34 +23,6 @@ class userController {
     }
   }
 
-
-  static async addUserControllerManual(username, email, password, permissionLevelFromBody, res) {
-    try {
-      const userInstance = new userModel();
-      const existingUser = await userInstance.getUserByUsername(username);
-      if (existingUser) {
-        return res.status(409).json({ error: 'Username already exists.' });
-      }
-      const permission_level = permissionLevelFromBody || PERMISSION_LEVELS.USER; // Use provided level or default
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const verificationCode = generateVerificationCode();
-      const verificationExpires = new Date();
-      verificationExpires.setHours(verificationExpires.getHours() + 2);
-      const formattedVerificationExpires = verificationExpires.toISOString().slice(0, 19).replace('T', ' ');
-      await userInstance.addUser(
-        username,
-        email,
-        hashedPassword,
-        permission_level,
-        verificationCode,
-        formattedVerificationExpires
-      );
-    } catch (err) {
-      console.error('Error in addUserControllerManual:', err);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  }
-  
   static async addUserController(req, res) {
     const { username, email, password, permission_level: permissionLevelFromBody } = req.body;
     
@@ -88,10 +60,37 @@ class userController {
       res.status(201).json({ message: "User registered. Please check your email to verify account",  verificationCode });
       console.log(verificationCode)
     } catch (err) {
-      res.status(500).json({ error: error.message });
-
+      res.status(500).json({ error: 'Internal server error' });
     }
   }
+
+  static async addUserControllerManual(username, email, password, permissionLevelFromBody, res) {
+    try {
+      const userInstance = new userModel();
+      const existingUser = await userInstance.getUserByUsername(username);
+      if (existingUser) {
+        return res.status(409).json({ error: 'Username already exists.' });
+      }
+      const permission_level = permissionLevelFromBody || PERMISSION_LEVELS.USER; // Use provided level or default
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const verificationCode = generateVerificationCode();
+      const verificationExpires = new Date();
+      verificationExpires.setHours(verificationExpires.getHours() + 2);
+      const formattedVerificationExpires = verificationExpires.toISOString().slice(0, 19).replace('T', ' ');
+      await userInstance.addUser(
+        username,
+        email,
+        hashedPassword,
+        permission_level,
+        verificationCode,
+        formattedVerificationExpires
+      );
+    } catch (err) {
+      console.error('Error in addUserControllerManual:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+  
     
   static async deleteUserController(req, res) {
     const userId = req.params.userId;
@@ -110,22 +109,6 @@ class userController {
   static async logout(req, res) {
     // Logout logic here
   }
-
-  static async doesUserExist(username) {
-    console.log("Checking if user exists")
-    try {
-      const userInstance = new userModel();
-      const user = await userInstance.getUserByUsername(username);
-      if (user == null) {
-        return false;
-      }
-      return true;
-    } catch (error) {
-      console.error('Error checking user existence:', error);
-      return false;
-    }
-  }
-
   static async getUserByUsernameController(req, res) {
     const username = req.params.username;
     try {
@@ -140,6 +123,25 @@ class userController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  //CHECK USERNAME MANUALY
+  static async doesUserExist(username) {
+    console.log("Checking if user exists")
+    try {
+      const userInstance = new userModel();
+      const user = await userInstance.getUserByUsername(username);
+      if (user == null) {
+        return false;
+      }
+      return true;
+      // Return true if user exists, false otherwise
+    } catch (error) {
+      console.error('Error checking user existence:', error);
+      return false; // Return false in case of an error
+    }
+  }
+
+
   static async login(req, res) {
     try {
         const { username, password } = req.body;
@@ -157,6 +159,9 @@ class userController {
         console.log("This is the username:", username);
         console.log("This is the password:", password);
         if (isValid) {
+            // Set the username in the session
+            //req.session.username = username;
+            console.log("This is the username Session:", req.session.usernamename);
             // Create token
             console.log(JWT_SECRET);
             console.log(EXPIRES_IN);
@@ -169,7 +174,7 @@ class userController {
         console.error('Login error: ', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-}
+  }
 
   
 
@@ -197,9 +202,12 @@ class userController {
     }
   }
 
-  static verifyLoguin(req, res) {
-    res.json({ username: req.session.username || null });
+  static verifyLogin(req, res) {
+    const username = req.session ? req.session.username: null;
+    console.log('Session:', req.session);
+    res.json({ username });
   }
+
   static async handlePasswordForm(req, res) {
     const { password, confirmPassword, token } = req.body;
     if (password !== confirmPassword) {
@@ -223,6 +231,7 @@ class userController {
     const { verificationCode } = req.body;
     console.log("Received verification code:", verificationCode);
     try {
+
         const userInstance = new userModel();
         // Retrieve user with the given verification code
         const user = await userInstance.getUserByVerificationCode(verificationCode);
