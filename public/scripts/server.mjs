@@ -149,10 +149,10 @@ app.use((req, res, next) => {
     res.status(404).send("Sorry can't find that!")
 });
 
-app.use((err, req, res, next) => {
+/*app.use((err, req, res, next) => {
     console.error(err.stack)
     res.status(500).send({ error: err.message || 'Something broke!' });
 
 });
-
+*/
 export default app;
