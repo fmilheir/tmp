@@ -5,7 +5,8 @@ export const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.redirect('/login'); 
+    res.status(403).send({ msg: 'You are not authorized to view this page!' });
+    res.redirect('/');
 };
 
 export const isAdmin = (req, res, next) => {
@@ -15,5 +16,20 @@ export const isAdmin = (req, res, next) => {
     if (req.user.permission_level === PERMISSION_LEVELS.ADMIN) {
         return next();
     }
+    res.status(403).send({ msg: 'You are not authorized to view this page!' });
     res.redirect('/login');
 };
+
+export const sessionsAuth = (req, res, next) => {
+    if (req.session.username) {
+        return res.status(200).send({ msg: "Logged in already.", user: req.session.username });
+    } else {
+        req.session.username = {
+            id: "user_object.id",
+            name: "username",
+            expiry: "expireTime"
+        };
+        next();
+        return res.status(200).send({ msg: "Session created", user: req.session.username });
+    }
+}
