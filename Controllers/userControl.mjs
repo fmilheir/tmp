@@ -64,7 +64,7 @@ class userController {
     }
   }
 
-  static async addUserControllerManual(username, email, password, permissionLevelFromBody, res) {
+  static async addUserControllerManual(username, email, password, permissionLevelFromBody) {
     try {
       const userInstance = new userModel();
       const existingUser = await userInstance.getUserByUsername(username);
@@ -86,7 +86,7 @@ class userController {
         formattedVerificationExpires
       );
     } catch (err) {
-      res.status(500).json({ error: 'Internal server error' });
+      console.log({ error: 'Internal server error' });
     }
   }
   
