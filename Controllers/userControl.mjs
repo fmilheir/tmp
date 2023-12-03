@@ -86,7 +86,6 @@ class userController {
         formattedVerificationExpires
       );
     } catch (error) {
-      console.error('Error in addUserControllerManual:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -124,7 +123,6 @@ class userController {
     }
   }
 
-  //CHECK USERNAME MANUALY
   static async doesUserExist(username) {
     console.log("Checking if user exists")
     try {
@@ -134,10 +132,8 @@ class userController {
         return false;
       }
       return true;
-      // Return true if user exists, false otherwise
     } catch (error) {
-      console.error('Error checking user existence:', error);
-      return false; // Return false in case of an error
+      return false;
     }
   }
 
@@ -171,7 +167,6 @@ class userController {
             res.status(401).json({ error: 'Wrong username or password!' });
         }
     } catch (error) {
-        console.error('Login error: ', error);
         res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -197,7 +192,6 @@ class userController {
       await sendPasswordResetEmail.send(user.email, token, user.username);     
       res.status(200).json({ message: 'Password reset email sent successfully!' });
     } catch (error) {
-      console.error('Forgot password error:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -246,7 +240,6 @@ class userController {
         console.log("Current Time:", currentTime);
         console.log("Verification Expires:", user.verificationExpires);
         if (currentTime > new Date(user.verificationExpires)) {
-          console.log("Verification code has expired");
           return res.status(400).json({ error: "Verification code has expired." });
         }
 
@@ -260,7 +253,6 @@ class userController {
             res.status(400).json({ error: "Failed to verify account." });
         }
     } catch (error) {
-        console.error("Verification error:", error);
         res.status(500).json({ error: 'Internal server error' });
     }
   }
