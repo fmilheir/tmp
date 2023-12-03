@@ -14,6 +14,29 @@ const __dirname = path.resolve();
 const app = express();
 
 
+const sessionStore = new (MySQLStore(session))({
+    clearExpired: true,
+    expiration: 86400000,
+    checkExpirationInterval: 3600000,
+    createDatabaseTable: true,
+      }, 
+    pool);
+// Initialize the session
+app.use(session({
+    name: 'session_name',
+    secret: 'developer',
+    resave: false,
+    saveUninitialized: true,
+    store: sessionStore, // Use a store to store session data 
+    cookie: { 
+        maxAge: 3600000, // 1 hour in milliseconds
+        sameSite: true,
+        secure: false, // Set to true if using https
+        httpOnly: true,
+    },
+    credentials: true, // Allows credentials (cookies) to be sent with cross-origin requests
+}));
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -99,7 +122,17 @@ app.get('/reset-password', (req, res) => {
 });
 
 
+app.get("/login", (req, res) => {
+    res.redirect( "/public/login.html"); 
+});
 
+app.get("/pois", (req, res) =>{
+    res.redirect("/public/pois.html");
+});
+
+app.get("/users", (req, res) =>{
+    res.redirect("/public/users.html");
+});
 app.get("/verificationcode", (req, res) => {
     const verificationCode = req.query.code;
     res.redirect(`/public/verificationcode.html?code=${verificationCode}`);
