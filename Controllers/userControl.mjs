@@ -23,6 +23,34 @@ class userController {
     }
   }
 
+
+  static async addUserControllerManual(username, email, password, permissionLevelFromBody, res) {
+    try {
+      const userInstance = new userModel();
+      const existingUser = await userInstance.getUserByUsername(username);
+      if (existingUser) {
+        return res.status(409).json({ error: 'Username already exists.' });
+      }
+      const permission_level = permissionLevelFromBody || PERMISSION_LEVELS.USER; // Use provided level or default
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const verificationCode = generateVerificationCode();
+      const verificationExpires = new Date();
+      verificationExpires.setHours(verificationExpires.getHours() + 2);
+      const formattedVerificationExpires = verificationExpires.toISOString().slice(0, 19).replace('T', ' ');
+      await userInstance.addUser(
+        username,
+        email,
+        hashedPassword,
+        permission_level,
+        verificationCode,
+        formattedVerificationExpires
+      );
+    } catch (err) {
+      console.error('Error in addUserControllerManual:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+  
   static async addUserController(req, res) {
     const { username, email, password, permission_level: permissionLevelFromBody } = req.body;
     
@@ -82,6 +110,22 @@ class userController {
   static async logout(req, res) {
     // Logout logic here
   }
+
+  static async doesUserExist(username) {
+    console.log("Checking if user exists")
+    try {
+      const userInstance = new userModel();
+      const user = await userInstance.getUserByUsername(username);
+      if (user == null) {
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error('Error checking user existence:', error);
+      return false;
+    }
+  }
+
   static async getUserByUsernameController(req, res) {
     const username = req.params.username;
     try {
