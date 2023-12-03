@@ -85,7 +85,7 @@ class userController {
         verificationCode,
         formattedVerificationExpires
       );
-    } catch (error) {
+    } catch (err) {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
