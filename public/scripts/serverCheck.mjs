@@ -35,7 +35,7 @@ async function startConnection() {
         lon DECIMAL(10, 6),
         lat DECIMAL(10, 6),
         description TEXT,
-        recommendations TEXT,
+        recommendations INT,
         image INT DEFAULT NULL
       )
     `);

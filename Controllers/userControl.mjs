@@ -106,8 +106,33 @@ class userController {
   }
 
   static async logout(req, res) {
-    // Logout logic here
+    if (req.session) {
+      // Log the session object for debugging
+      console.log('Session before destruction:', req.session);
+      // Destroy the session
+      req.session.destroy(err => {
+        if (err) {
+          // Log the error for debugging
+          console.error('Session destruction error:', err);
+          // Respond with an error status
+          res.status(500).json({ message: 'Logout failed, please try again.' });
+        } else {
+          // Clear the session cookie
+          res.clearCookie('session_name');
+          // Log a message indicating successful logout
+          console.log('Session destroyed, user logged out');
+          // Send a success response
+          res.status(200).json({ message: 'Logout successful.' });
+        }
+      });
+    } else {
+      // If the session does not exist, log an error
+      console.error('Logout error: session does not exist.');
+      // Respond with an error status
+      res.status(500).json({ message: 'Logout failed, session not found.' });
+    }
   }
+
   static async getUserByUsernameController(req, res) {
     const username = req.params.username;
     try {
@@ -156,7 +181,7 @@ class userController {
         console.log("This is the password:", password);
         if (isValid) {
             // Set the username in the session
-            //req.session.username = username;
+            req.session.username = username;
             console.log("This is the username Session:", req.session.usernamename);
             // Create token
             console.log(JWT_SECRET);
@@ -197,9 +222,12 @@ class userController {
   }
 
   static verifyLogin(req, res) {
-    const username = req.session ? req.session.username: null;
-    console.log('Session:', req.session);
-    res.json({ username });
+    if (req.session) {
+      const username = req.session.username;
+      console.log("Session:", req.session);
+      console.log(username);
+      res.json({ username: username });
+    }
   }
 
   static async handlePasswordForm(req, res) {

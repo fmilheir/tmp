@@ -80,7 +80,7 @@ function Users({ title }) {
       <tbody>{tableResult}</tbody>
     </table>
   );
-  $("#table_id").DataTable();
+  //$("#table_id").DataTable();
   return (
     <div>
       <h3>{title}</h3>

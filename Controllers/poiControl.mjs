@@ -98,11 +98,10 @@ class PointsOfInterestController {
     }
 
     static async addRecomendationToPoi(req, res) {
-      const poiID = req.params.id
+      const poiID = req.body.poi_id
   
       try {
-        const pointsOfInterestModel = new PointsOfInterestModel();
-        const pointOfInterestId = await pointsOfInterestModel.addRecomendationToPoi({poiID});
+        const pointOfInterestId = await new PointsOfInterestModel().addRecomendationToPoi(poiID);
         res.json({ pointOfInterestId });
       } catch (error) {
         res.status(500).json({ error: error.message });
