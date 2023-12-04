@@ -278,12 +278,10 @@ function Region({ title }) {
           } else if (response.status == 403) {
             alert("You don't have permission to do that! Please LogIn!");
           }
-          console.log(response.json);
           return response.json(); // Get the image data as ArrayBuffer
         })
         .then((data) => {
           let basedata = data.base;
-          console.log(basedata);
 
           /* Extract the data URL from the response JSON
           const imageBase64 = btoa(
@@ -297,6 +295,7 @@ function Region({ title }) {
           const lon = poi.lon;
           let markerLet = [lat, lon];
           const popUpDiv = document.createElement(`div`);
+          popUpDiv.setAttribute("class", "align-items-center justify-content-between ")
           const name = document.createTextNode(poi.name);
           const br = document.createElement(`p`);
           popUpDiv.appendChild(name);
@@ -304,8 +303,7 @@ function Region({ title }) {
           const image = document.createElement(`img`);
           image.setAttribute("src", `data:image/jpeg;base64,${basedata}`);
           image.setAttribute("alt", "There is no picture");
-          image.setAttribute("width", "200");
-          image.setAttribute("height", "300");
+          image.setAttribute("width", "100%");
           //image.setAttribute("onError", "this.style.display='none';");
           popUpDiv.appendChild(image);
           popUpDiv.appendChild(br);
