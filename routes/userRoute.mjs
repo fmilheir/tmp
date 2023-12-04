@@ -17,18 +17,16 @@ const router = express.Router();
   })();
 
 
-router.get('/all', userController.getAllUsersController);
-
-router.post('/signup', userController.addUserController); 
-
-router.delete('/users/:userId', userController.deleteUserController); 
-router.get('/users/username/:username', userController.getUserByUsernameController);
-router.get('/verifylogin', userController.verifyLogin);
-router.post('/login', userController.login);
-router.post('/logout', userController.logout);
-router.post('/verify-account', userController.verifyAccount);
-router.post('/forgot-password', userController.forgotPassword);
-router.post('/reset-password', userController.handlePasswordForm);
+  router.get('/all',isAdmin, userController.getAllUsersController);
+  router.post('/signup', userController.addUserController); 
+  router.delete('/users/:userId',isAdmin, userController.deleteUserController); 
+  router.get('/users/username/:username',isAdmin, userController.getUserByUsernameController);
+  router.get('/verifylogin', userController.verifyLogin);
+  router.post('/login', userController.login);
+  router.post('/logout', userController.logout, isAuthenticated);
+  router.post('/verify-account', userController.verifyAccount);
+  router.post('/forgot-password', userController.forgotPassword);
+  router.post('/reset-password', userController.handlePasswordForm);
 router.post('/admin-signup', isAuthenticated, isAdmin, async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
     try {

@@ -1,5 +1,3 @@
-
-let marker;
 function Region({ title }) {
   //// (4)
   //check use of this variables//
@@ -12,7 +10,6 @@ function Region({ title }) {
 
   const [poi, setPoi] = React.useState([]);
   const [map, setMap] = React.useState(null);
-
 
   React.useEffect(() => {
     /// map (8)
@@ -35,22 +32,16 @@ function Region({ title }) {
       Latitude = e.latlng.lat;
       Longtitude = e.latlng.lng;
       const pos = [Latitude, Longtitude];
-
-      ////////////////////////////////////////////////////////////////////   // picture upload
-  
-
-
       ////////////////////////////////////////////////////////////////////////////////// picture upload over
       const domDiv = document.createElement("div");
       domDiv.innerHTML = `
             <form id="poi-form">
-
               <h6>Please enter the details of the POI you wich to add<h6>
-                <input type="text" id="name" name="name" placeholder="Please enter the Name" class="form-control form-control-user">
-                <input type="text" id="type" name="type" placeholder="Please enter the Type" class="form-control form-control-user">
-                <input type="text" id="country" name="country" placeholder="Please enter the Country" class="form-control form-control-user">
-                <input type="text" id="region" name="region" placeholder="Please enter the Region" class="form-control form-control-user">
-                <textarea id="description" name="description" placeholder="Describe the place" class="form-control form-control-user"></textarea>
+                <input type="text" id="name" name="name" placeholder="Please enter the Name" class="form-control form-control-user required">
+                <input type="text" id="type" name="type" placeholder="Please enter the Type" class="form-control form-control-user required">
+                <input type="text" id="country" name="country" placeholder="Please enter the Country" class="form-control form-control-user required">
+                <input type="text" id="region" name="region" placeholder="Please enter the Region" class="form-control form-control-user required">
+                <textarea id="description" name="description" placeholder="Describe the place" class="form-control form-control-user required"></textarea>
                 <button id="submit" type="submit" class="btn btn-primary btn-user btn-block">Submit</button>
             </form> `;
 
@@ -65,7 +56,6 @@ function Region({ title }) {
                       <button id='no' value='no' class="btn btn-primary btn-user " >No </button>
                     </form>`;
 
-
       let popupp = false;
 
       domDiv.addEventListener("submit", (event) => {
@@ -77,7 +67,6 @@ function Region({ title }) {
         const country = formData.get("country");
         const region = formData.get("region");
         const description = formData.get("description");
-
 
         if (
           name.trim() == "" ||
@@ -168,7 +157,6 @@ function Region({ title }) {
           };
           
         }
-
       });
 
       const marker = L.marker(pos).addTo(map);
@@ -193,11 +181,20 @@ function Region({ title }) {
   }, []);
 
   function recommend(id) {
-    fetch(`http://localhost:3000/poi/recommend/${id}`, {
+    const poi = {
+      poi_id: id,
+  };
+    fetch(`http://localhost:3000/poi/recommend`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify(poi),
     }).then((response) => {
       if (response.status === 200) {
         alert("Recommendation submitted successfully!");
+      }else if(response.status === 403){
+        alert("You don't have permission to do that! Please LogIn")
       }
       return response.json();
     });
@@ -215,19 +212,18 @@ function Region({ title }) {
     if (regionName.trim == "") {
       alert("Please enter a region first");
     } else {
-
-      
       fetch(
         `http://localhost:3000/poi/pointsOfInterestByRegion/${regionName}`,
         {
           method: "GET",
         }
       )
-
         //.then((response) =>response.json())
         .then((response) => {
           if (response.status == 404) {
-            alert("Please enter a region first");
+            alert("Please enter a valid region first");
+          }else if(response.status == 403){
+            alert("You don't have permission to do that! Please LogIn!")
           }
           return response.json();
         })
@@ -240,22 +236,38 @@ function Region({ title }) {
             const lat = poi.lat;
             const lon = poi.lon;
             let markerLet = [lat, lon];
-
-            marker = L.marker(markerLet).addTo(map);
-
-            marker.bindPopup(`
-                          <h3 id="namep" >${poi.name}</h3>
-                          <img src="/photos/${poi.id}.jpeg" alt="There is no picture" width="200" height="300" onError="this.style.display='none';">
-                          <p id="descp"> ${poi.description}</p>
-                          <p id="idp" style="display:none">${poi.id}</p> 
-                          <button id="recomendbut">Recommend</button> <br>
-                          `);
+            const popUpDiv = document.createElement(`div`);
+            const name = document.createTextNode(poi.name);
+            const br = document.createElement(`p`);
+            popUpDiv.appendChild(name);
+            popUpDiv.appendChild(br);
+            const image = document.createElement(`img`);
+            image.setAttribute("src", "/photos/${poi.id}.jpeg");
+            image.setAttribute("alt", "There is no picture");
+            image.setAttribute("width", "200");
+            image.setAttribute("height", "300");
+            image.setAttribute("onError", "this.style.display='none';");
+            popUpDiv.appendChild(image);
+            popUpDiv.appendChild(br);
+            const description = document.createTextNode(poi.description);
+            popUpDiv.appendChild(description);
+            popUpDiv.appendChild(br);
+            const recommendBtn = document.createElement(`input`);
+            recommendBtn.setAttribute("type", "button");
+            recommendBtn.setAttribute("value", "Recommend");
+            recommendBtn.setAttribute(
+              "class",
+              "d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+            );
+            recommendBtn.addEventListener(
+              "click",
+              recommend.bind(this, poi.id)
+            );
+            popUpDiv.appendChild(recommendBtn);
+            L.marker(markerLet).addTo(map).bindPopup(popUpDiv);
+            map.setView([poi.lat, poi.lon], 14);
           });
-          addEventListener("click", (event) => {
-            if (event.target.id === "recomendbut") {
-              recommend(document.getElementById("idp").value);
-            }
-          });
+          
         });
     }
 
@@ -277,9 +289,7 @@ function Region({ title }) {
   };
 
   return (
-
     <div className="container-fluid">
-
       <div>
         <h1 className="h3 mb-0 text-gray-800">{title}</h1>
         <div className="d-sm-flex align-items-center justify-content-between mb-4">
@@ -361,7 +371,6 @@ function Region({ title }) {
     </div>
   );
 }
-
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Region title="Search by region" />);
