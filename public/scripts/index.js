@@ -47,14 +47,14 @@ function Region({ title }) {
 
       ////////////////////////////////////////////////////////////////////   // picture upload
       const domForm = document.createElement("div");
-       // form for the picture
+      // form for the picture
       domForm.innerHTML = `
-                    <form method='post' enctype='multipart/form-data' action="/photos/upload" id="uploadform">
+                    <div>
                       <h6>Would you like to add a picture?<h6> 
-                      <input type='file' id='imageInput'/><br>
+                      <input type='file' id='imageInput' /><br>
                       <button id='uploadBtn' value='Upload' class="btn btn-primary btn-user">upload</button>
                       <button id='no' value='no' class="btn btn-primary btn-user " >No </button>
-                    </form>`;
+                    </div>`;
 
       let popupp = false;
 
@@ -67,6 +67,7 @@ function Region({ title }) {
         const country = formData.get("country");
         const region = formData.get("region");
         const description = formData.get("description");
+        let newPoi = {};
 
         if (
           name.trim() == "" ||
@@ -78,21 +79,22 @@ function Region({ title }) {
           alert("Please fill in all the fields!");
           return;
         } else {
-          const newPoi = {
-            name: name,
-            type: type,
-            country: country,
-            region: region,
-            lon: Longtitude,
-            lat: Latitude,
-            description: description,
-            recommendations: 0,
-          };
           marker.bindPopup(domForm).openPopup();
 
           addEventListener("click", (event) => {
             // if the no button pressed it wont show any pictures!
             if (event.target.id === "no") {
+              newPoi = {
+                name: name,
+                type: type,
+                country: country,
+                region: region,
+                lon: Longtitude,
+                lat: Latitude,
+                description: description,
+                recommendations: 0,
+                image: null,
+              };
               sendPoi();
               marker
                 .bindPopup(
@@ -100,12 +102,12 @@ function Region({ title }) {
                             <p> ${description}</p>`
                 )
                 .openPopup();
-            }else if(event.target.id === "uploadBtn"){
-              sendPoi();
+            } else if (event.target.id === "uploadBtn") {
+              sendFiles();
             }
           });
           /////////// Poi upload code
-          const sendPoi = async() =>{
+          const sendPoi = async () => {
             fetch(`http://localhost:3000/poi/pointsOfInterest`, {
               method: "POST",
               headers: {
@@ -113,7 +115,6 @@ function Region({ title }) {
               },
               body: JSON.stringify(newPoi),
             }).then((response) => {
-              
               if (response.status == 200) {
                 alert("Place added successfully!");
                 response.json().then(
@@ -122,7 +123,6 @@ function Region({ title }) {
                     popupp = true; // needed
                     let poiId = data.pointOfInterestId; // returned id for the poi
                     console.log(poiId);
-                    sendFiles();
                   } // stay inside
                 );
               } else if (response.status === 401) {
@@ -134,28 +134,91 @@ function Region({ title }) {
               }
               //return response.json();
             });
-          }
+          };
           /////////// picture upload code
           const sendFiles = async () => {
-            console.log("sendingfiles")
-            ////////////////////////// (picture upload)
-
+            console.log("sending files");
             const fileInput = document.getElementById("imageInput");
-            //new way with base 64
-            fileInput.addEventListener("change", function () {
-              const file = fileInput.files[0];
-              const reader = new FileReader();
-             
-              reader.onload = function () {
-                const base64String = reader.result.split(",")[1]; // Get the Base64 string
-                console.log(base64String);
-                // Now you can store the base64String in your database
+            const file = fileInput.files[0]; // Create an image element to display the selected image
+            const reader = new FileReader();
+            reader.onload = function () {
+              const img = new Image();
+              img.onload = function () {
+                const maxWidth = 400; // Maximum width for the resized image
+                const maxHeight = 300; // Maximum height for the resized image
+                let newWidth = img.width;
+                let newHeight = img.height; // Resize the image if it exceeds maxWidth or maxHeight
+                if (img.width > maxWidth) {
+                  newWidth = maxWidth;
+                  newHeight = (img.height * maxWidth) / img.width;
+                }
+                if (newHeight > maxHeight) {
+                  newHeight = maxHeight;
+                  newWidth = (img.width * maxHeight) / img.height;
+                }
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+                ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                canvas.toBlob(
+                  (blob) => {
+                    const compressedReader = new FileReader();
+                    compressedReader.onload = function () {
+                      const compressedBase64String =
+                        compressedReader.result.split(",")[1]; // Now you can store the compressedBase64String in your database
+                      const newImage = { base: compressedBase64String }; // Display the compressed and resized image
+                      console.log(compressedBase64String);
+                      fetch(`http://localhost:3000/image/imagesadd`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(newImage),
+                      }).then((response) => {
+                        if (response.status === 200) {
+                          alert("Image Added");
+                          response.json().then((data) => {
+                            newPoi = {
+                              name: name,
+                              type: type,
+                              country: country,
+                              region: region,
+                              lon: Longtitude,
+                              lat: Latitude,
+                              description: description,
+                              recommendations: 0,
+                              image: data.imageId,
+                            };
+                            sendPoi();
+                            marker
+                              .bindPopup(
+                                `<h3>${name}</h3> 
+                            <p> ${description}</p>
+                            <img src="data:image/jpeg;base64,${compressedBase64String}">`
+                              )
+                              .openPopup();
+                          });
+                        } else if (response.status === 401) {
+                          alert("You are not logged in!");
+                        } else if (response.status === 500) {
+                          alert("error500");
+                        } else if (response.status === 413) {
+                          alert("responso 413");
+                        } else {
+                          console.log(response);
+                          alert("Error uploading image");
+                        }
+                      });
+                    };
+                    compressedReader.readAsDataURL(blob);
+                  },
+                  "image/jpeg",
+                  0.8
+                ); // Adjust quality as needed
               };
-             
-              reader.readAsDataURL(file); // Convert the image to Base64
-            });
+              img.src = URL.createObjectURL(file);
+            };
+            reader.readAsDataURL(file); // Convert the image to Base64
           };
-          
         }
       });
 
@@ -183,18 +246,18 @@ function Region({ title }) {
   function recommend(id) {
     const poi = {
       poi_id: id,
-  };
+    };
     fetch(`http://localhost:3000/poi/recommend`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-    },
-    body: JSON.stringify(poi),
+      },
+      body: JSON.stringify(poi),
     }).then((response) => {
       if (response.status === 200) {
         alert("Recommendation submitted successfully!");
-      }else if(response.status === 403){
-        alert("You don't have permission to do that! Please LogIn")
+      } else if (response.status === 403) {
+        alert("You don't have permission to do that! Please LogIn");
       }
       return response.json();
     });
@@ -204,6 +267,66 @@ function Region({ title }) {
     alert(`Shared ${id}`);
   }
 
+  async function fetchImage(poi) {
+    if (poi.id) {
+      fetch(`http://localhost:3000/image/images/${poi.id}`, {
+        method: "GET",
+      })
+        .then((response) => {
+          if (response.status == 404) {
+            alert("There no valid image");
+          } else if (response.status == 403) {
+            alert("You don't have permission to do that! Please LogIn!");
+          }
+          return response.json(); // Get the image data as ArrayBuffer
+        })
+        .then((data) => {
+          let basedata = data.base;
+
+          /* Extract the data URL from the response JSON
+          const imageBase64 = btoa(
+            new Uint8Array(data).reduce((binary, byte) => {
+              return binary + String.fromCharCode(byte);
+            }, "")
+          );*/
+
+          //creating all the elements to display in the popup of each POI
+          const lat = poi.lat;
+          const lon = poi.lon;
+          let markerLet = [lat, lon];
+          const popUpDiv = document.createElement(`div`);
+          popUpDiv.setAttribute("class", "align-items-center justify-content-between ")
+          const name = document.createTextNode(poi.name);
+          const br = document.createElement(`p`);
+          popUpDiv.appendChild(name);
+          popUpDiv.appendChild(br);
+          const image = document.createElement(`img`);
+          image.setAttribute("src", `data:image/jpeg;base64,${basedata}`);
+          image.setAttribute("alt", "There is no picture");
+          image.setAttribute("width", "100%");
+          //image.setAttribute("onError", "this.style.display='none';");
+          popUpDiv.appendChild(image);
+          popUpDiv.appendChild(br);
+          const description = document.createTextNode(poi.description);
+          popUpDiv.appendChild(description);
+          popUpDiv.appendChild(br);
+          const recommendBtn = document.createElement(`input`);
+          recommendBtn.setAttribute("type", "button");
+          recommendBtn.setAttribute("value", "Recommend");
+          recommendBtn.setAttribute(
+            "class",
+            "d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+          );
+          recommendBtn.addEventListener("click", recommend.bind(this, poi.id));
+          popUpDiv.appendChild(recommendBtn);
+          L.marker(markerLet).addTo(map).bindPopup(popUpDiv);
+          map.setView([poi.lat, poi.lon], 14);
+        })
+        .catch((error) => {
+          console.error("Error:", error.message);
+        });
+    }
+  }
   function searchByRegion() {
     /// search /////////////// (4)
 
@@ -222,8 +345,8 @@ function Region({ title }) {
         .then((response) => {
           if (response.status == 404) {
             alert("Please enter a valid region first");
-          }else if(response.status == 403){
-            alert("You don't have permission to do that! Please LogIn!")
+          } else if (response.status == 403) {
+            alert("You don't have permission to do that! Please LogIn!");
           }
           return response.json();
         })
@@ -233,41 +356,8 @@ function Region({ title }) {
           ///////////////////// Add each POI to the markers array and create a marker for it
           data.forEach((poi) => {
             ///////////////////////////////////////////////////(13)
-            const lat = poi.lat;
-            const lon = poi.lon;
-            let markerLet = [lat, lon];
-            const popUpDiv = document.createElement(`div`);
-            const name = document.createTextNode(poi.name);
-            const br = document.createElement(`p`);
-            popUpDiv.appendChild(name);
-            popUpDiv.appendChild(br);
-            const image = document.createElement(`img`);
-            image.setAttribute("src", "/photos/${poi.id}.jpeg");
-            image.setAttribute("alt", "There is no picture");
-            image.setAttribute("width", "200");
-            image.setAttribute("height", "300");
-            image.setAttribute("onError", "this.style.display='none';");
-            popUpDiv.appendChild(image);
-            popUpDiv.appendChild(br);
-            const description = document.createTextNode(poi.description);
-            popUpDiv.appendChild(description);
-            popUpDiv.appendChild(br);
-            const recommendBtn = document.createElement(`input`);
-            recommendBtn.setAttribute("type", "button");
-            recommendBtn.setAttribute("value", "Recommend");
-            recommendBtn.setAttribute(
-              "class",
-              "d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-            );
-            recommendBtn.addEventListener(
-              "click",
-              recommend.bind(this, poi.id)
-            );
-            popUpDiv.appendChild(recommendBtn);
-            L.marker(markerLet).addTo(map).bindPopup(popUpDiv);
-            map.setView([poi.lat, poi.lon], 14);
+            fetchImage(poi);
           });
-          
         });
     }
 

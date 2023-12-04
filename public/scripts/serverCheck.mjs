@@ -45,7 +45,7 @@ async function startConnection() {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS images (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        base BLOB 
+        base LONGTEXT 
       )
     `);
     console.log('Checked "images" table.');
