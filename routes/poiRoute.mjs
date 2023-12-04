@@ -10,7 +10,7 @@ router.get('/pointsOfInterestByRegion/:region', PointsOfInterestController.getPo
 
 //router.post('/pointsOfInterest/:name/:type/:country/:region/:lon/:lat/:description', PointsOfInterestController.addPointOfInterestController);
 
-router.post('/pointsOfInterest',isAuthenticated, PointsOfInterestController.addPointOfInterestController);
+router.post('/pointsOfInterest', PointsOfInterestController.addPointOfInterestController);
 
 router.delete('/pointsOfInterest/:id', isAdmin,PointsOfInterestController.deletePointOfInterestController);
 

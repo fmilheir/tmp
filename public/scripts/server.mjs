@@ -10,6 +10,7 @@ import MySQLStore from 'express-mysql-session';
 import { fileURLToPath } from "url";
 import * as jwtUtils from '../../middleware/jwtUtils.mjs';
 import { DateTime } from "luxon";
+import bodyParser from "body-parser";
 
 
 
@@ -44,6 +45,7 @@ app.use(session({
     credentials: true, // Allows credentials (cookies) to be sent with cross-origin requests
 }));
 
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
