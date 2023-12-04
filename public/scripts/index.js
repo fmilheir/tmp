@@ -47,8 +47,17 @@ function Region({ title }) {
         } else {
           console.log('Error creating session location');
         }
-    
-        // Assuming you have a Leaflet map initialized earlier
+        
+         // Create a Leaflet marker with a custom icon
+         L.marker([lat, lon], {
+          icon: L.icon({
+            iconUrl: '../public/img/current_location.png',
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -32],
+          }),
+        }).addTo(map);
+
         map.setView([lat, lon], 14);
         console.log(position);
       } catch (error) {
