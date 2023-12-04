@@ -10,7 +10,6 @@ function Region({ title }) {
 
   const [poi, setPoi] = React.useState([]);
   const [map, setMap] = React.useState(null);
-
   React.useEffect(() => {
     /// map (8)
 
@@ -20,7 +19,50 @@ function Region({ title }) {
         "Map data copyright OpenStreetMap contributors, Open Database Licence",
     }).addTo(map);
 
-    map.setView([51.05, -0.72], 14); // load mapfocus
+  
+    /////////////////////////////////changes//////////////////////////////
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+    
+    async function successFunction(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+    
+      try {
+        const response = await fetch('/location', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // if you're using session cookies
+          body: JSON.stringify({ lat, lon }), // Sending lat and lon in the request body
+        });
+    
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+        } else {
+          console.log('Error creating session location');
+        }
+    
+        // Assuming you have a Leaflet map initialized earlier
+        map.setView([lat, lon], 14);
+        console.log(position);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+    
+    function errorFunction(error) {
+      map.setView([51.05, -0.72], 14); // load mapfocus
+      console.log("Unable to retrieve your location.");
+      console.error('Error getting location:', error.message);
+    }
+    
+    /////////////////////////////////changes//////////////////////////////
 
     setMap(map);
 

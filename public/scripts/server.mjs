@@ -49,6 +49,28 @@ app.use(bodyParser.json({ limit: '10mb' }));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
+    /////////////////////////////////changes//////////////////////////////
+
+app.post('/location', (req, res) => {
+    const { latitude, longitude } = req.body;
+
+    // Set location data in a cookie
+    res.cookie('locationCookie', JSON.stringify({ latitude, longitude }), {
+        maxAge: 3600000, // 1 hour in milliseconds
+        sameSite: true,
+        secure: false, // Set to true if using https
+        httpOnly: true,
+    });
+
+    res.json({ message: 'Location stored successfully.' });
+});
+
+
+    /////////////////////////////////changes//////////////////////////////
+
+
 app.use('/user', UserRoute);
 app.use('/poi', Poirouter);
 app.use('/image', ImageRouter);
@@ -82,8 +104,6 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
-
-
 
 app.get("/", (req, res) => {
     res.redirect( "/public/index.html");
