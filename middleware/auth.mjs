@@ -1,23 +1,27 @@
+import userModel from '../Models/userModel.mjs';
 export const isAuthenticated = (req, res, next) => {
     // Check if the user is authenticated
     // If authenticated, call next()
     // If not, redirect to login 
-    if (req.isAuthenticated()) {
+    if (req.session.username) {
         return next();
     }
-    res.status(403).send({ msg: 'You are not authorized to view this page!' });
+    //res.status(403).send({ msg: 'You are not authorized to view this page!' });
     res.redirect('/');
 };
 
 export const isAdmin = (req, res, next) => {
-    // Check if the user is an admin
-    // If admin, call next()
-    // If not, redirect to login
-    if (req.user.permission_level === PERMISSION_LEVELS.ADMIN) {
-        return next();
+    if (req.session.username) {
+        const userInstance = new userModel();
+
+        userInstance.getUserByUsername(req.session.username).then((user) => {
+            if (user.permission_level === 'admin') {
+                return next();
+            }
+            //es.status(403).send({ msg: 'You are not authorized to view this page!' });
+            res.redirect('/');
+        });
     }
-    res.status(403).send({ msg: 'You are not authorized to view this page!' });
-    res.redirect('/login');
 };
 
 export const sessionsAuth = (req, res, next) => {

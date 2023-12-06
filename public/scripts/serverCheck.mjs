@@ -50,6 +50,16 @@ async function startConnection() {
     `);
     console.log('Checked "images" table.');
 
+    await connection.query(`
+    CREATE TABLE IF NOT EXISTS sessions (
+      session_id VARCHAR(128) NOT NULL,
+      expires BIGINT,
+      data TEXT,
+      PRIMARY KEY (session_id)
+    )
+    `);
+    console.log('Checked "sessions" table.');
+
     connection.release(); // Release the connection back to the pool
 
   } catch (error) {

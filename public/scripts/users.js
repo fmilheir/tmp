@@ -18,7 +18,7 @@ function Users({ title }) {
   }
 
   fetch(`http://localhost:3000/user/all`, {
-    method: "GET",
+    method: "GET"
   })
     //.then((response) =>response.json())
     .then((response) => {

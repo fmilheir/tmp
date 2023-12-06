@@ -73,6 +73,7 @@ function AppWidget({ area }) {
     const user = await loggeduser.json();
     if(user.username){
       //event.preventDefault();
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
       setLoggedInUser(user.username);
       setIsLoggedIn(true);
     }else{
@@ -392,7 +393,7 @@ function TopBar({ verifyLogin, loggedInUser, logoutUser, isLoggedIn , handleLogi
             <span className="mr-2 d-lg-inline text-gray-600 small">
               Welcome {loggedInUser}
             </span>
-            <img class="img-profile rounded-circle" src="../public/img/undraw_profile.svg"></img>
+            <img className="img-profile rounded-circle" src="../public/img/undraw_profile.svg"></img>
           </a>
 
           <div
@@ -477,7 +478,7 @@ function TopBar({ verifyLogin, loggedInUser, logoutUser, isLoggedIn , handleLogi
                   </div>
                 </form>
               </a>
-              <a class="dropdown-item text-center small text-gray-500" href="/public/verify.html">Reset Password</a>
+              <a className="dropdown-item text-center small text-gray-500" href="/public/verify.html">Reset Password</a>
             </div>
           </li>
           <li className="nav-item dropdown no-arrow mx-1">

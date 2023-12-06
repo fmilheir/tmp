@@ -148,6 +148,7 @@ class userController {
     }
   }
 
+
   static async doesUserExist(username) {
     console.log("Checking if user exists")
     try {

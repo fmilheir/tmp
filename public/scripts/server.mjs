@@ -11,6 +11,7 @@ import { fileURLToPath } from "url";
 import * as jwtUtils from '../../middleware/jwtUtils.mjs';
 import { DateTime } from "luxon";
 import bodyParser from "body-parser";
+import { isAuthenticated, isAdmin } from '../../middleware/auth.mjs';
 
 
 
@@ -71,9 +72,9 @@ app.post('/location', (req, res) => {
     /////////////////////////////////changes//////////////////////////////
 
 
-app.use('/user', UserRoute);
-app.use('/poi', Poirouter);
-app.use('/image', ImageRouter);
+app.use('/user', UserRoute, isAdmin);
+app.use('/poi', Poirouter, isAuthenticated);
+app.use('/image', ImageRouter, isAuthenticated);
 app.use(express.static("publid"));
 app.use("/public", express.static('./public/'));
 
@@ -155,11 +156,11 @@ app.get("/login", (req, res) => {
     res.redirect( "/public/login.html"); 
 });
 
-app.get("/pois", (req, res) =>{
+app.get("/pois", isAuthenticated, (req, res) => {
     res.redirect("/public/pois.html");
 });
 
-app.get("/users", (req, res) =>{
+app.get("/users", isAdmin, (req, res) => {
     res.redirect("/public/users.html");
 });
 app.get("/verificationcode", (req, res) => {
