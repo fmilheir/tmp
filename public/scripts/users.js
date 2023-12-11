@@ -25,6 +25,10 @@ function Users({ title }) {
       if (response.status == 404) {
         alert("No users to display");
       }
+      else if (response.status == 403) {
+        alert("Forbidden");
+        window.location.href = "http://localhost:3000/public/index.html";
+      }
       return response.json();
     })
     .then((data) => {

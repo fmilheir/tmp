@@ -7,12 +7,7 @@ import path from 'path';
 import session from 'express-session';
 import pool from './pool.mjs';
 import MySQLStore from 'express-mysql-session';
-import { fileURLToPath } from "url";
-import * as jwtUtils from '../../middleware/jwtUtils.mjs';
-import { DateTime } from "luxon";
 import bodyParser from "body-parser";
-import { isAuthenticated, isAdmin } from '../../middleware/auth.mjs';
-
 
 
 import swaggerJSDoc from "swagger-jsdoc";
@@ -156,13 +151,13 @@ app.get("/login", (req, res) => {
     res.redirect( "/public/login.html"); 
 });
 
-app.get("/pois", (req, res) => {
-    res.redirect("/public/pois.html");
-});
+//app.get("/pois", (req, res) => {
+ //   res.redirect("/public/pois.html");
+//});
 
-app.get("/users", (req, res) => {
-    res.redirect("/public/users.html");
-});
+//app.get("/users", (req, res) => {
+//    res.redirect("/public/users.html");
+//});
 app.get("/verificationcode", (req, res) => {
     const verificationCode = req.query.code;
     res.redirect(`/public/verificationcode.html?code=${verificationCode}`);
